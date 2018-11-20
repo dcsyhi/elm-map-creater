@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Lorem on 軍議開発資料-壱</title>
+    <link>http://dcsyhi.github.io/gungi/tags/lorem/</link>
+    <description>Recent content in Lorem on 軍議開発資料-壱</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>ja</language>
+    <lastBuildDate>Wed, 30 Aug 2017 19:34:02 +0000</lastBuildDate>
+    
+	<atom:link href="http://dcsyhi.github.io/gungi/tags/lorem/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Lorem Ipsum</title>
+      <link>http://dcsyhi.github.io/gungi/post/lorem-ipsum/</link>
+      <pubDate>Wed, 30 Aug 2017 19:34:02 +0000</pubDate>
+      
+      <guid>http://dcsyhi.github.io/gungi/post/lorem-ipsum/</guid>
+      <description>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi blandit sem vel tortor elementum, vitae vehicula justo aliquam. Interdum et malesuada fames ac ante ipsum primis in faucibus. Etiam malesuada euismod metus, quis pharetra ligula mattis nec. Donec a nibh quis nibh vehicula tempor vel in mauris. Pellentesque sit amet tristique erat, venenatis tempus felis. Sed ac felis augue. Donec interdum libero at velit venenatis, non laoreet risus dignissim. Praesent porta et diam non aliquet.</description>
+    </item>
+    
+  </channel>
+</rss>

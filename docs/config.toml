@@ -1,0 +1,10 @@
+baseURL = "http://dcsyhi.github.io/gungi"
+languageCode = "ja"
+title = "軍議開発資料-壱"
+theme = "pixyll"
+
+[Params]
+description = "軍儀をリスペクトしつつ新しいボードゲームを作成する"
+twitter_account = "enma"
+github_account = "dcsyhi"
+
