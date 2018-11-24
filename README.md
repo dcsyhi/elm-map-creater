@@ -18,9 +18,3 @@ http://www.geisya.or.jp/~mwm48961/kou2/linear_image3.html
 
 クォータービューの描画例
 https://takachan.hatenablog.com/entry/2016/01/15/000750
-
-outputQuarterLine=
-    outputLine|>(List.map <| Tile.px <|Tuple.first  <| Tuple.second )
-
-outputQuarterRow =
-outputRow|>(List.map <| Tile.py <|Tuple.first  <| Tuple.second )
