@@ -1,4 +1,4 @@
-module Main exposing (Model, Msg(..), Point, createList, createSelectList, createXYList, drawBoard, drawLine, drawLineList, drawObjects, drawPoints, drawQuarterBoard, drawQuarterLine, drawQuarterLineList, drawQuarterRow, drawQuarterRowList, drawQuarterView, drawRectsBlue, drawRectsGreen, drawRectsRed, drawRectsYellow, drawRow, drawRowList, getElements, getIndexElement, getIndexList, getIndexListRev, getPointXList, getPointYList, init, main, max, outputLine, outputLineRev, outputQuarterLine, outputQuarterRow, outputRow, sample1, selectElement, swap, update, view)
+module Main exposing (Model, Msg(..), Point, createList, createSelectList, createXYList, drawBoard, drawLine, drawLineList, drawObjects, drawPoints, drawQuarterLine, drawQuarterLineList, drawQuarterRow, drawQuarterRowList, drawRectsBlue, drawRectsGreen, drawRectsRed, drawRectsYellow, drawRow, drawRowList, getElements, getIndexElement, getIndexList, getIndexListRev, getPointXList, getPointYList, init, main, max, outputLine, outputLineRev, outputQuarterLine, outputQuarterRow, outputRow, sample1, selectElement, swap, update, view)
 
 import Array exposing (..)
 import Browser
@@ -89,13 +89,6 @@ drawObjects =
         ]
 
 
-drawQuarterView : Html Msg
-drawQuarterView =
-    svg
-        [ width (px 500), height (px 500), viewBox 0 0 500 500 ]
-        [ drawQuarterBoard max ]
-
-
 drawBoard : Int -> Svg msg
 drawBoard i =
     let
@@ -115,25 +108,6 @@ drawBoard i =
                 List.foldr (::) (drawRowList (max + 1)) (drawLineList (max + 1))
 
 
-drawQuarterBoard : Int -> Svg msg
-drawQuarterBoard i =
-    let
-        count =
-            List.range 0 i
-                |> SelectList.fromList
-                |> Maybe.withDefault (SelectList.singleton 0)
-                |> SelectList.selectWhileLoopBy i
-                |> SelectList.selected
-    in
-    case count of
-        0 ->
-            svg [] []
-
-        _ ->
-            svg [ width (px 500), height (px 500), viewBox 0 0 500 500 ] <|
-                List.foldr (::) (drawQuarterRowList (max + 1)) (drawQuarterLineList (max + 1))
-
-
 view : Model -> Html Msg
 view model =
     div []
@@ -141,7 +115,7 @@ view model =
         , hr [] []
         , drawObjects
         , hr [] []
-        , drawQuarterView
+        , drawQuarterLine 1
         ]
 
 
@@ -195,7 +169,9 @@ createList i j =
 
 createSelectList : Int -> SelectList.SelectList (Point String)
 createSelectList n =
-    SelectList.fromLists [] (Point 0 0 (Array.fromList [ "nothing" ])) (createList n (max - 1) |> List.reverse)
+    SelectList.fromLists []
+        (Point 0 0 (Array.fromList [ "nothing" ]))
+        (createList n (max - 1) |> List.reverse)
         |> SelectList.attempt SelectList.delete
 
 
