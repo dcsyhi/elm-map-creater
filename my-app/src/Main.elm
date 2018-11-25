@@ -1,4 +1,4 @@
-module Main exposing (Model, Msg(..), Point, checkOffSelectList, createList, createSelectList, drawBoard, drawLine, drawLineList, drawObjects, drawPoints, drawRectsBlue, drawRectsGreen, drawRectsRed, drawRectsYellow, drawRow, drawRowList, getIndexElement, getIndexList, getIndexListRev, getPointXList, getPointYList, init, main, max, outputLine, outputLineRev, outputRow, sample1, selectElement, swap, update, view)
+module Main exposing (Model, Msg(..), Point, createList, createSelectList, createXYList, drawBoard, drawLine, drawLineList, drawObjects, drawPoints, drawQuarterBoard, drawQuarterLine, drawQuarterLineList, drawQuarterRow, drawQuarterRowList, drawQuarterView, drawRectsBlue, drawRectsGreen, drawRectsRed, drawRectsYellow, drawRow, drawRowList, getElements, getIndexElement, getIndexList, getIndexListRev, getPointXList, getPointYList, init, main, max, outputLine, outputLineRev, outputQuarterLine, outputQuarterRow, outputRow, sample1, selectElement, swap, update, view)
 
 import Array exposing (..)
 import Browser
@@ -10,8 +10,9 @@ import Html.Attributes exposing (attribute, src)
 import Maybe exposing (..)
 import Monocle.Lens exposing (Lens, compose)
 import SelectList
+import Tile exposing (..)
 import TypedSvg exposing (..)
-import TypedSvg.Attributes exposing (..)
+import TypedSvg.Attributes as SvgAt exposing (..)
 import TypedSvg.Core exposing (..)
 import TypedSvg.Types exposing (..)
 
@@ -88,6 +89,13 @@ drawObjects =
         ]
 
 
+drawQuarterView : Html Msg
+drawQuarterView =
+    svg
+        [ width (px 500), height (px 500), viewBox 0 0 500 500 ]
+        [ drawQuarterBoard max ]
+
+
 drawBoard : Int -> Svg msg
 drawBoard i =
     let
@@ -107,6 +115,25 @@ drawBoard i =
                 List.foldr (::) (drawRowList (max + 1)) (drawLineList (max + 1))
 
 
+drawQuarterBoard : Int -> Svg msg
+drawQuarterBoard i =
+    let
+        count =
+            List.range 0 i
+                |> SelectList.fromList
+                |> Maybe.withDefault (SelectList.singleton 0)
+                |> SelectList.selectWhileLoopBy i
+                |> SelectList.selected
+    in
+    case count of
+        0 ->
+            svg [] []
+
+        _ ->
+            svg [ width (px 500), height (px 500), viewBox 0 0 500 500 ] <|
+                List.foldr (::) (drawQuarterRowList (max + 1)) (drawQuarterLineList (max + 1))
+
+
 view : Model -> Html Msg
 view model =
     div []
@@ -114,7 +141,7 @@ view model =
         , hr [] []
         , drawObjects
         , hr [] []
-        , drawObjects
+        , drawQuarterView
         ]
 
 
@@ -172,15 +199,32 @@ createSelectList n =
         |> SelectList.attempt SelectList.delete
 
 
+zip : List a -> List b -> List ( a, b )
+zip xs ys =
+    List.map2 Tuple.pair xs ys
+
+
+createXYList : Int -> List ( Float, Float )
+createXYList n =
+    let
+        a =
+            createSelectList n |> SelectList.toList |> List.map .x |> List.map toFloat
+
+        b =
+            createSelectList n |> SelectList.toList |> List.map .y |> List.map toFloat
+    in
+    zip a b
+
+
 
 -- not used
 
 
-checkOffSelectList : SelectList.SelectList (List String)
-checkOffSelectList =
+getElements : SelectList.SelectList (List String)
+getElements =
     let
         a =
-            createSelectList 3
+            createSelectList max
     in
     a |> SelectList.map .point |> SelectList.map Array.toList
 
@@ -191,7 +235,7 @@ checkOffSelectList =
 
 selectElement : Int -> List String
 selectElement i =
-    checkOffSelectList |> SelectList.attempt (SelectList.selectBy i) |> SelectList.selected
+    getElements |> SelectList.attempt (SelectList.selectBy i) |> SelectList.selected
 
 
 
@@ -200,7 +244,7 @@ selectElement i =
 
 getIndexElement : Int -> Int
 getIndexElement i =
-    checkOffSelectList |> SelectList.attempt (SelectList.selectBy i) |> SelectList.index
+    getElements |> SelectList.attempt (SelectList.selectBy i) |> SelectList.index
 
 
 
@@ -285,11 +329,61 @@ outputRow num py =
 drawRow : Int -> Svg msg
 drawRow i =
     polyline
-        [ fill FillNone
+        [ SvgAt.fill FillNone
         , stroke Color.black
         , points <| outputRow max (i * 50 |> toFloat)
         ]
         []
+
+
+outputQuarterRow : Int -> List ( Float, Float )
+outputQuarterRow n =
+    createXYList n |> List.map (\( x, y ) -> ( Tile.quarterX x y, Tile.quarterY x y ))
+
+
+outputQuarterLine : Int -> List ( Float, Float )
+outputQuarterLine n =
+    createXYList n |> List.map (\( x, y ) -> ( Tile.quarterX x y, Tile.quarterY x y ))
+
+
+drawQuarterRow : Int -> Svg msg
+drawQuarterRow i =
+    polyline
+        [ SvgAt.fill FillNone
+        , stroke Color.black
+        , points <| outputQuarterRow max
+        ]
+        []
+
+
+drawQuarterRowList : Int -> List (Svg msg)
+drawQuarterRowList i =
+    case i of
+        0 ->
+            drawRow 0 :: []
+
+        _ ->
+            drawRow i :: drawQuarterRowList (i - 1)
+
+
+drawQuarterLine : Int -> Svg msg
+drawQuarterLine i =
+    polyline
+        [ SvgAt.fill FillNone
+        , stroke Color.black
+        , points <| outputQuarterLine max
+        ]
+        []
+
+
+drawQuarterLineList : Int -> List (Svg msg)
+drawQuarterLineList i =
+    case i of
+        0 ->
+            drawQuarterLine 0 :: []
+
+        _ ->
+            drawRow i :: drawQuarterLineList (i - 1)
 
 
 drawRowList : Int -> List (Svg msg)
@@ -305,7 +399,7 @@ drawRowList i =
 drawLine : Int -> Svg msg
 drawLine i =
     polyline
-        [ fill FillNone
+        [ SvgAt.fill FillNone
         , stroke Color.black
         , points <| outputLine (max + 1) (i * 50 |> toFloat)
         ]
@@ -353,7 +447,7 @@ drawRectsRed i j =
         , height (px 50)
         , rx (px 15)
         , ry (px 15)
-        , fill (Fill (Color.rgb255 208 16 76))
+        , SvgAt.fill (Fill (Color.rgb255 208 16 76))
         , fillOpacity (Opacity <| 0.9)
         , stroke (Color.rgb255 208 16 76)
         , strokeWidth (pt 2.0)
@@ -374,7 +468,7 @@ drawRectsBlue i j =
         , height (px 50)
         , rx (px 15)
         , ry (px 15)
-        , fill (Fill (Color.rgb255 0 92 175))
+        , SvgAt.fill (Fill (Color.rgb255 0 92 175))
         , fillOpacity (Opacity <| 0.9)
         , stroke (Color.rgb255 0 92 175)
         , strokeWidth (pt 2.0)
@@ -395,7 +489,7 @@ drawRectsGreen i j =
         , height (px 50)
         , rx (px 15)
         , ry (px 15)
-        , fill (Fill (Color.rgb255 27 129 62))
+        , SvgAt.fill (Fill (Color.rgb255 27 129 62))
         , fillOpacity (Opacity <| 0.9)
         , stroke (Color.rgb255 27 129 62)
         , strokeWidth (pt 2.0)
@@ -416,7 +510,7 @@ drawRectsYellow i j =
         , height (px 50)
         , rx (px 15)
         , ry (px 15)
-        , fill (Fill (Color.rgb255 239 187 36))
+        , SvgAt.fill (Fill (Color.rgb255 239 187 36))
         , fillOpacity (Opacity <| 0.9)
         , stroke (Color.rgb255 239 187 36)
         , strokeWidth (pt 2.0)

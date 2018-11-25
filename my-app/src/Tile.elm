@@ -1,4 +1,4 @@
-module Tile exposing (Array2D, bottom, fill, foldl, get, h, indexedMap, map, offset_x, offset_y, px, py, set, toList, top, w)
+module Tile exposing (Array2D, bottom, fill, foldl, get, h, indexedMap, map, offsetX, offsetY, quarterX, quarterY, set, toList, top, w)
 
 import Array exposing (..)
 import Maybe exposing (..)
@@ -80,18 +80,18 @@ w =
     32
 
 
-offset_x =
+offsetX =
     200
 
 
-offset_y =
+offsetY =
     200
 
 
-px : Float -> Float -> Float
-px x y =
-    offset_x +  1 / 2  * w * (x + y)
+quarterX : Float -> Float -> Float
+quarterX x y =
+    offsetX + 0.5*w*(x + y)
 
-py : Float -> Float -> Float
-py x y =
-    offset_y + 1 / 4 * h * (-x + y)
+quarterY : Float -> Float -> Float
+quarterY  x y =
+    offsetY + 0.25*h*(-x + y)
