@@ -92,8 +92,18 @@ drawObjects =
 drawQuarterObjects : Html Msg
 drawQuarterObjects =
     svg
-        [ width (px 1000), height (px 1000), viewBox 0 0 1000 1000 ]
-        [ drawQuarterLine 1
+        [ width (px 500), height (px 500), viewBox 0 0 500 500 ]
+        [ drawQuarterLine 0
+        , drawQuarterLine 1
+        , drawQuarterLine 2
+        , drawQuarterLine 3
+        , drawQuarterLine 4
+        , drawQuarterLine 5
+        , drawQuarterLine 6
+        , drawQuarterLine 7
+        , drawQuarterLine 8
+        , drawQuarterRow 1
+        , drawQuarterRow 2
         ]
 
 
@@ -192,10 +202,18 @@ createXYList : Int -> List ( Float, Float )
 createXYList n =
     let
         a =
-            createSelectList n |> SelectList.toList |> List.map .x |> List.map toFloat
+            createSelectList n
+                |> SelectList.attempt SelectList.delete
+                |> SelectList.toList
+                |> List.map .x
+                |> List.map toFloat
 
         b =
-            createSelectList n |> SelectList.toList |> List.map .y |> List.map toFloat
+            createSelectList n
+                |> SelectList.attempt SelectList.delete
+                |> SelectList.toList
+                |> List.map .y
+                |> List.map toFloat
     in
     zip a b
 
@@ -322,7 +340,9 @@ drawRow i =
 
 outputQuarterRow : Int -> List ( Float, Float )
 outputQuarterRow n =
-    createXYList n |> List.map (\( x, y ) -> ( Tile.quarterX x y, Tile.quarterY x y ))
+    createXYList n
+        |> List.map (\( x, y ) -> ( Tile.quarterX x y, Tile.quarterY x y ))
+        |> List.reverse
 
 
 outputQuarterLine : Int -> List ( Float, Float )
@@ -335,7 +355,7 @@ drawQuarterRow i =
     polyline
         [ SvgAt.fill FillNone
         , stroke Color.black
-        , points <| outputQuarterRow max
+        , points <| outputQuarterRow i
         ]
         []
 
@@ -352,10 +372,10 @@ drawQuarterRowList i =
 
 drawQuarterLine : Int -> Svg msg
 drawQuarterLine i =
-    line
+    polyline
         [ SvgAt.fill FillNone
         , stroke Color.black
-        , points <| outputQuarterLine max
+        , points <| outputQuarterLine i
         ]
         []
 
