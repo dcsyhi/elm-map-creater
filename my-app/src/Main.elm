@@ -89,6 +89,14 @@ drawObjects =
         ]
 
 
+drawQuarterObjects : Html Msg
+drawQuarterObjects =
+    svg
+        [ width (px 1000), height (px 1000), viewBox 0 0 1000 1000 ]
+        [ drawQuarterLine 1
+        ]
+
+
 drawBoard : Int -> Svg msg
 drawBoard i =
     let
@@ -115,7 +123,7 @@ view model =
         , hr [] []
         , drawObjects
         , hr [] []
-        , drawQuarterLine 1
+        , drawQuarterObjects
         ]
 
 
@@ -344,7 +352,7 @@ drawQuarterRowList i =
 
 drawQuarterLine : Int -> Svg msg
 drawQuarterLine i =
-    polyline
+    line
         [ SvgAt.fill FillNone
         , stroke Color.black
         , points <| outputQuarterLine max
