@@ -1,4 +1,4 @@
-module Tile exposing (Array2D, bottom, fill, foldl, get, h, indexedMap, map, offsetX, offsetY, quarterX, quarterY, set, toList, top, w)
+module Tile exposing (Array2D, fill, foldl, get, h, indexedMap, leftSide, map, offsetX, offsetY, quarterX, quarterY, rightSide, set, toList, top, w)
 
 import Array exposing (..)
 import Maybe exposing (..)
@@ -56,24 +56,8 @@ toList rows =
     Array.toList (Array.map Array.toList rows)
 
 
-top =
-    fill 4 3 0
-        |> set 1 1 1
-        |> set 2 0 1
-        |> set 3 0 1
-        |> set 3 1 1
-
-
-bottom =
-    fill 4 3 1
-        |> set 0 0 0
-        |> set 0 1 0
-        |> set 1 0 0
-        |> set 2 1 0
-
-
 h =
-    32
+    32 
 
 
 w =
@@ -81,17 +65,33 @@ w =
 
 
 offsetX =
-    200
+    100
 
 
 offsetY =
-    200
+    100
 
 
 quarterX : Float -> Float -> Float
 quarterX x y =
-    offsetX + 0.5*w*(x + y)
+    offsetX + 0.5 * w * (x + y)
+
 
 quarterY : Float -> Float -> Float
-quarterY  x y =
-    offsetY + 0.25*h*(-x + y)
+quarterY x y =
+    offsetY + 0.25 * h * (-x + y)
+
+
+top : List ( Float, Float )
+top =
+    [ ( 0, h/4 ), ( w/2, 0 ), ( w, h/4 ), ( w/2, h/2 ) ]
+
+
+leftSide : List ( Float, Float )
+leftSide =
+    [ ( 0, h/4 ), ( w/2, h/2 ), ( w/2, h ), ( 0, 3*h/4 ) ]
+
+
+rightSide : List ( Float, Float )
+rightSide =
+    [ ( w/2, h/2 ), ( w, h/4 ), ( w, 3*h/4 ), ( w/2, h ) ]
