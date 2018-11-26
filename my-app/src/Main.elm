@@ -1,4 +1,4 @@
-module Main exposing (Model, Msg(..), Point, createList, createSelectList, createXYList, drawBoard, drawLine, drawLineList, drawObjects, drawPoints, drawQuarterLine, drawQuarterLineList, drawQuarterRow, drawQuarterRowList, drawRectsBlue, drawRectsGreen, drawRectsRed, drawRectsYellow, drawRow, drawRowList, getElements, getIndexElement, getIndexList, getIndexListRev, getPointXList, getPointYList, init, main, max, outputLine, outputLineRev, outputQuarterLine, outputQuarterRow, outputRow, sample1, selectElement, swap, update, view)
+module Main exposing (Model, Msg(..), Point, arrangeCube, createList, createSelectList, createXYList, drawBoard, drawLine, drawLineList, drawObjects, drawPoints, drawQuarterObjects, drawRectsBlue, drawRectsGreen, drawRectsRed, drawRectsYellow, drawRow, drawRowList, getElements, getIndexElement, getIndexList, getIndexListRev, getPointXList, getPointYList, init, main, max, outputLine, outputLineRev, outputQuarterLine, outputRow, sample1, selectElement, swap, update, view, zip)
 
 import Array exposing (..)
 import Browser
@@ -89,22 +89,23 @@ drawObjects =
         ]
 
 
-drawQuarterObjects : Html Msg
-drawQuarterObjects =
-    svg
-        [ width (px 500), height (px 500), viewBox 0 0 500 500 ]
-        [ drawQuarterLine 0
-        , drawQuarterLine 1
-        , drawQuarterLine 2
-        , drawQuarterLine 3
-        , drawQuarterLine 4
-        , drawQuarterLine 5
-        , drawQuarterLine 6
-        , drawQuarterLine 7
-        , drawQuarterLine 8
-        , drawQuarterRow 1
-        , drawQuarterRow 2
-        ]
+drawQuarterObjects : Int -> Html Msg
+drawQuarterObjects i =
+    let
+        count =
+            List.range 0 i
+                |> SelectList.fromList
+                |> Maybe.withDefault (SelectList.singleton 0)
+                |> SelectList.selectWhileLoopBy i
+                |> SelectList.selected
+    in
+    case count of
+        0 ->
+            svg [] []
+
+        _ ->
+            svg [ width (px 400), height (px 400), viewBox 0 0 400 400 ] <|
+                List.foldr (::) (arrangeCube (max + 1) i) (arrangeCube (max + 1) (i - 1))
 
 
 drawBoard : Int -> Svg msg
@@ -133,7 +134,10 @@ view model =
         , hr [] []
         , drawObjects
         , hr [] []
-        , drawQuarterObjects
+        , drawQuarterObjects 1
+        , drawQuarterObjects 2
+        , drawQuarterObjects 3
+        , drawQuarterObjects 4
         ]
 
 
@@ -338,56 +342,67 @@ drawRow i =
         []
 
 
-outputQuarterRow : Int -> List ( Float, Float )
-outputQuarterRow n =
+outputQuarterLine : Int -> SelectList.SelectList ( Float, Float )
+outputQuarterLine n =
     createXYList n
         |> List.map (\( x, y ) -> ( Tile.quarterX x y, Tile.quarterY x y ))
-        |> List.reverse
+        |> SelectList.fromList
+        |> Maybe.withDefault (SelectList.singleton ( 0.0, 0.0 ))
 
 
-outputQuarterLine : Int -> List ( Float, Float )
-outputQuarterLine n =
-    createXYList n |> List.map (\( x, y ) -> ( Tile.quarterX x y, Tile.quarterY x y ))
+arrangeCube : Int -> Int -> List (Svg msg)
+arrangeCube n i =
+    let
+        count =
+            outputQuarterLine n
+                |> SelectList.selectWhileLoopBy i
+                |> SelectList.index
 
+        x =
+            outputQuarterLine n
+                |> SelectList.selectWhileLoopBy i
+                |> SelectList.selected
+                |> Tuple.first
 
-drawQuarterRow : Int -> Svg msg
-drawQuarterRow i =
-    polyline
-        [ SvgAt.fill FillNone
-        , stroke Color.black
-        , points <| outputQuarterRow i
-        ]
-        []
-
-
-drawQuarterRowList : Int -> List (Svg msg)
-drawQuarterRowList i =
-    case i of
+        y =
+            outputQuarterLine n
+                |> SelectList.selectWhileLoopBy i
+                |> SelectList.selected
+                |> Tuple.second
+    in
+    case count of
         0 ->
-            drawRow 0 :: []
+            []
 
         _ ->
-            drawRow i :: drawQuarterRowList (i - 1)
-
-
-drawQuarterLine : Int -> Svg msg
-drawQuarterLine i =
-    polyline
-        [ SvgAt.fill FillNone
-        , stroke Color.black
-        , points <| outputQuarterLine i
-        ]
-        []
-
-
-drawQuarterLineList : Int -> List (Svg msg)
-drawQuarterLineList i =
-    case i of
-        0 ->
-            drawQuarterLine 0 :: []
-
-        _ ->
-            drawRow i :: drawQuarterLineList (i - 1)
+            [ polygon
+                [ SvgAt.fill (Fill Color.green)
+                , stroke Color.black
+                , strokeLinejoin StrokeLinejoinRound
+                , points <| (Tile.top |> List.map (\( a, b ) -> ( a + x, b + y )))
+                ]
+                []
+            , polygon
+                [ SvgAt.fill (Fill Color.black)
+                , stroke Color.black
+                , strokeLinejoin StrokeLinejoinRound
+                , strokeWidth (px 1.0)
+                , fillOpacity (Opacity 0.1)
+                , fillRule FillRuleNonZero
+                , points <| (Tile.leftSide |> List.map (\( c, d ) -> ( c + x, d + y )))
+                ]
+                []
+            , polygon
+                [ SvgAt.fill (Fill Color.black)
+                , stroke Color.black
+                , strokeLinejoin StrokeLinejoinRound
+                , strokeWidth (px 1.0)
+                , fillOpacity (Opacity 0.1)
+                , fillRule FillRuleEvenOdd
+                , points <| (Tile.rightSide |> List.map (\( e, f ) -> ( e + x, f + y )))
+                ]
+                []
+            ]
 
 
 drawRowList : Int -> List (Svg msg)
