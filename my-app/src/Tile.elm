@@ -1,7 +1,18 @@
 module Tile exposing (Array2D, fill, foldl, get, h, indexedMap, leftSide, map, offsetX, offsetY, quarterX, quarterY, rightSide, set, toList, top, w)
 
 import Array exposing (..)
+import Browser
+import Color exposing (Color)
+import Debug
+import Dict
+import Html exposing (..)
+import Html.Attributes exposing (attribute, src)
 import Maybe exposing (..)
+import SelectList
+import TypedSvg exposing (..)
+import TypedSvg.Attributes as SvgAt exposing (..)
+import TypedSvg.Core exposing (..)
+import TypedSvg.Types exposing (..)
 
 
 
@@ -57,7 +68,7 @@ toList rows =
 
 
 h =
-    32 
+    32
 
 
 w =
