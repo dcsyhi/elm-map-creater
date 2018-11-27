@@ -1,4 +1,4 @@
-module Main exposing (Model, Msg(..), drawObjects, drawQuarterObjects, init, main, sample1, update, view)
+module Main exposing (Model, Msg(..), drawObjects, drawQuarterBoard, drawQuarterObjects, init, main, sample1, update, view)
 
 import Array exposing (..)
 import Board
@@ -78,17 +78,28 @@ drawObjects =
     svg
         [ width (px 300), height (px 300), viewBox 0 0 300 300 ]
         [ Board.drawBoard Board.max
-        , Board.drawRectsRed 2 2
-        , Board.drawRectsBlue 2 0
-        , Board.drawRectsGreen 3 4
-        , Board.drawRectsYellow 5 2
+
+        --        , Board.drawRectsRed 2 2
+        --        , Board.drawRectsBlue 2 0
+        --        , Board.drawRectsGreen 3 4
+        --        , Board.drawRectsYellow 5 2
         , Board.drawPoints 5 5
         , Board.drawPoints 2 3
         ]
 
 
-drawQuarterObjects : Int -> Html Msg
+drawQuarterObjects : Int -> List (Svg msg)
 drawQuarterObjects i =
+    case i of
+        0 ->
+            []
+
+        _ ->
+            List.foldr (::) (Board.arrangeCubeList i (Board.max - 1)) <| drawQuarterObjects (i - 1)
+
+
+drawQuarterBoard : Int -> Html Msg
+drawQuarterBoard i =
     let
         count =
             List.range 0 i
@@ -103,7 +114,7 @@ drawQuarterObjects i =
 
         _ ->
             svg [ width (px 400), height (px 400), viewBox 0 0 400 400 ] <|
-                List.foldr (::) (Board.arrangeCube (Board.max + 1) i) (Board.arrangeCube (Board.max + 1) (i - 1))
+                drawQuarterObjects i
 
 
 
@@ -117,10 +128,7 @@ view model =
         , hr [] []
         , drawObjects
         , hr [] []
-        , drawQuarterObjects 1
-        , drawQuarterObjects 2
-        , drawQuarterObjects 3
-        , drawQuarterObjects 4
+        , drawQuarterBoard 20
         ]
 
 
