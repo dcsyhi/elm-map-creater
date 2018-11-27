@@ -236,30 +236,38 @@ arrangeCube n i =
                 [ SvgAt.fill (Fill Color.green)
                 , stroke Color.black
                 , strokeLinejoin StrokeLinejoinRound
+                , fillOpacity (Opacity 0.5)
+                , fillRule FillRuleNonZero
                 , points <| (Tile.top |> List.map (\( a, b ) -> ( a + x, b + y )))
                 ]
                 []
             , polygon
-                [ SvgAt.fill (Fill Color.black)
+                [ SvgAt.fill (Fill Color.gray)
                 , stroke Color.black
                 , strokeLinejoin StrokeLinejoinRound
                 , strokeWidth (px 1.0)
-                , fillOpacity (Opacity 0.1)
+                , fillOpacity (Opacity 0.2)
                 , fillRule FillRuleNonZero
                 , points <| (Tile.leftSide |> List.map (\( c, d ) -> ( c + x, d + y )))
                 ]
                 []
             , polygon
-                [ SvgAt.fill (Fill Color.black)
+                [ SvgAt.fill (Fill Color.gray)
                 , stroke Color.black
                 , strokeLinejoin StrokeLinejoinRound
                 , strokeWidth (px 1.0)
-                , fillOpacity (Opacity 0.1)
-                , fillRule FillRuleEvenOdd
+                , fillOpacity (Opacity 0.2)
+                , fillRule FillRuleNonZero
                 , points <| (Tile.rightSide |> List.map (\( e, f ) -> ( e + x, f + y )))
                 ]
                 []
             ]
+arrangeCubeList : Int -> Int -> List(Svg msg)
+arrangeCubeList n i =
+   case i of
+      0 -> []
+      _ -> List.foldr(::) (arrangeCube n i) (arrangeCubeList n (i-1))
+
 
 
 -- マス目に色のついたタイルを置くための関数（赤、黄、緑、青の４色を用意）
