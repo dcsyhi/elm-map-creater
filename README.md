@@ -7,8 +7,8 @@
 * はじめは平らなマップを用意して、プレイヤーが各マス目に高低差を作れるようにする
 * 駒を用意する
 
-* Ellieのアドレス 
-https://ellie-app.com/42vLXRqp47fa1
+* Ellieのアドレス
+https://ellie-app.com/42xyWj8jMhba1
 
 * 等角投影図について 
 http://tonbi.jp/Game/Essay/036/
