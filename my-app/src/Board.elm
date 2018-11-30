@@ -16,11 +16,8 @@ import TypedSvg.Attributes as SvgAt exposing (..)
 import TypedSvg.Core exposing (..)
 import TypedSvg.Types exposing (..)
 
---- Constant Values ---
-
 -- the number of maximum matrix size
-max = -- マス目の線の最大数
-    8
+max = 8
 
 -- 座標を作成するための型
 
@@ -91,9 +88,10 @@ createXYList n =
 outputQuarterLine : Int -> SelectList.SelectList ( Float, Float )
 outputQuarterLine n =
     createXYList n
-        |> List.map (\( x, y ) -> ( Tile.quarterX x y, Tile.quarterY x y ))
+        |> List.map (\( x, y ) -> ( quarterX x y, quarterY x y ))
         |> SelectList.fromList
         |> Maybe.withDefault (SelectList.singleton ( 0.0, 0.0 ))
+
 
 getPointXList : Int -> SelectList.SelectList Float
 getPointXList n =
@@ -201,11 +199,67 @@ drawBoard i =
             svg [] []
 
         _ ->
-            svg [ width (px 300), height (px 300), viewBox 0 0 300 300 ] <|
+            svg [ SvgAt.width (px 300), SvgAt.height (px 300), viewBox 0 0 300 300 ] <|
                 List.foldr (::) (drawRowList (max + 1)) (drawLineList (max + 1))
 
 
 -- Tile.elmで作成した関数を使ってタイルチップを配置（実際には単純に３つの平面を合成しただけ）
+stackCube : Int -> Int -> List (Svg msg)
+stackCube n i =
+    let
+        count =
+            stackQuarterLine n
+                |> SelectList.selectWhileLoopBy i
+                |> SelectList.index
+
+        x =
+            stackQuarterLine n
+                |> SelectList.selectWhileLoopBy i
+                |> SelectList.selected
+                |> Tuple.first
+
+        y =
+            stackQuarterLine n
+                |> SelectList.selectWhileLoopBy i
+                |> SelectList.selected
+                |> Tuple.second
+    in
+    case count of
+        0 ->
+            []
+
+        _ ->
+            [polygon
+                [ SvgAt.fill (Fill <| Color.rgb255 252 250 242 )
+                , stroke Color.black
+                , strokeLinejoin StrokeLinejoinRound
+                , strokeWidth (px 1.0)
+                , points <| (leftSide |> List.map (\( c, d ) -> ( c + x, d + y )))
+                ]
+                []
+            , polygon
+                 [ SvgAt.fill (Fill <| Color.rgb255 252 250 242 )
+                , stroke Color.black
+                , strokeLinejoin StrokeLinejoinRound
+                , strokeWidth (px 1.0)
+                , points <| (rightSide |> List.map (\( e, f ) -> ( e + x, f + y )))
+                ]
+                []
+             , polygon
+                [ SvgAt.fill (Fill <| Color.rgb255 252 250 242 )
+                , stroke Color.black
+                , strokeLinejoin StrokeLinejoinRound
+                , points <| (top |> List.map (\( a, b ) -> ( a + x, b + y )))
+                ]
+                []
+            ]
+
+stackCubeList : Int -> Int -> List(Svg msg)
+stackCubeList n i =
+   case n of
+      0 -> []
+      _ -> List.foldr(::) (stackCube n i) (stackCubeList (n-1) i)
+
 
 arrangeCube : Int -> Int -> List (Svg msg)
 arrangeCube n i =
@@ -232,41 +286,42 @@ arrangeCube n i =
             []
 
         _ ->
-            [ polygon
-                [ SvgAt.fill (Fill Color.green)
-                , stroke Color.black
-                , strokeLinejoin StrokeLinejoinRound
-                , fillOpacity (Opacity 0.5)
-                , fillRule FillRuleNonZero
-                , points <| (Tile.top |> List.map (\( a, b ) -> ( a + x, b + y )))
-                ]
-                []
-            , polygon
-                [ SvgAt.fill (Fill Color.gray)
+            [polygon
+                [ SvgAt.fill FillNone
                 , stroke Color.black
                 , strokeLinejoin StrokeLinejoinRound
                 , strokeWidth (px 1.0)
-                , fillOpacity (Opacity 0.2)
-                , fillRule FillRuleNonZero
-                , points <| (Tile.leftSide |> List.map (\( c, d ) -> ( c + x, d + y )))
+                , strokeOpacity <| Opacity 0.0
+                , points <| (leftSide |> List.map (\( c, d ) -> ( c + x, d + y )))
                 ]
                 []
             , polygon
-                [ SvgAt.fill (Fill Color.gray)
+                 [ SvgAt.fill FillNone
                 , stroke Color.black
                 , strokeLinejoin StrokeLinejoinRound
                 , strokeWidth (px 1.0)
-                , fillOpacity (Opacity 0.2)
-                , fillRule FillRuleNonZero
-                , points <| (Tile.rightSide |> List.map (\( e, f ) -> ( e + x, f + y )))
+                , strokeOpacity <| Opacity 0.0
+                , points <| (rightSide |> List.map (\( e, f ) -> ( e + x, f + y )))
+                ]
+                []
+             , polygon
+                [ SvgAt.fill FillNone
+                , stroke Color.black
+                , strokeLinejoin StrokeLinejoinRound
+                , strokeWidth (px 1.0)
+                , strokeOpacity <| Opacity 0.0
+                , points <| (top |> List.map (\( a, b ) -> ( a + x, b + y )))
                 ]
                 []
             ]
+            
+            
 arrangeCubeList : Int -> Int -> List(Svg msg)
 arrangeCubeList n i =
-   case i of
+   case n of
       0 -> []
-      _ -> List.foldr(::) (arrangeCube n i) (arrangeCubeList n (i-1))
+      _ -> List.foldr(::) (arrangeCube n i) (arrangeCubeList (n-1) i)
+
 
 
 
@@ -281,14 +336,11 @@ drawRectsRed i j =
         , y <|
             px <|
                 (getPointYList max |> SelectList.selectWhileLoopBy j |> SelectList.selected)
-        , width (px 50)
-        , height (px 50)
-        , rx (px 15)
-        , ry (px 15)
+        , SvgAt.width (px 50)
+        , SvgAt.height (px 50)
         , SvgAt.fill (Fill (Color.rgb255 208 16 76))
-        , fillOpacity (Opacity <| 0.9)
-        , stroke (Color.rgb255 208 16 76)
-        , strokeWidth (pt 2.0)
+        , stroke Color.black
+        , strokeWidth (pt 1.0)
         ]
         []
 
@@ -302,14 +354,11 @@ drawRectsBlue i j =
         , y <|
             px <|
                 (getPointYList max |> SelectList.selectWhileLoopBy j |> SelectList.selected)
-        , width (px 50)
-        , height (px 50)
-        , rx (px 15)
-        , ry (px 15)
+        , SvgAt.width (px 50)
+        , SvgAt.height (px 50)
         , SvgAt.fill (Fill (Color.rgb255 0 92 175))
-        , fillOpacity (Opacity <| 0.9)
-        , stroke (Color.rgb255 0 92 175)
-        , strokeWidth (pt 2.0)
+        , stroke Color.black
+        , strokeWidth (pt 1.0)
         ]
         []
 
@@ -323,14 +372,12 @@ drawRectsGreen i j =
         , y <|
             px <|
                 (getPointYList max |> SelectList.selectWhileLoopBy j |> SelectList.selected)
-        , width (px 50)
-        , height (px 50)
-        , rx (px 15)
-        , ry (px 15)
+        , SvgAt.width (px 50)
+        , SvgAt.height (px 50)
         , SvgAt.fill (Fill (Color.rgb255 27 129 62))
         , fillOpacity (Opacity <| 0.9)
-        , stroke (Color.rgb255 27 129 62)
-        , strokeWidth (pt 2.0)
+        , stroke Color.black
+        , strokeWidth (pt 1.0)
         ]
         []
 
@@ -344,14 +391,11 @@ drawRectsYellow i j =
         , y <|
             px <|
                 (getPointYList max |> SelectList.selectWhileLoopBy j |> SelectList.selected)
-        , width (px 50)
-        , height (px 50)
-        , rx (px 15)
-        , ry (px 15)
+        , SvgAt.width (px 50)
+        , SvgAt.height (px 50)
         , SvgAt.fill (Fill (Color.rgb255 239 187 36))
-        , fillOpacity (Opacity <| 0.9)
-        , stroke (Color.rgb255 239 187 36)
-        , strokeWidth (pt 2.0)
+        , stroke Color.black
+        , strokeWidth (pt 1.0)
         ]
         []
 
@@ -371,3 +415,14 @@ drawPoints i j =
         , r (px 10)
         ]
         []
+        
+        
+stackQuarterLine : Int -> SelectList.SelectList ( Float, Float )
+stackQuarterLine n =
+    createXYList n
+        |> List.map (\( x, y ) -> ( quarterX x y , quarterY x y))
+        |> List.map (\( x, y) -> ( x, (y + h /  2)))
+        |> SelectList.fromList
+        |> Maybe.withDefault (SelectList.singleton ( 0.0, 0.0 ))
+
+
