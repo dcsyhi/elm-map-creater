@@ -204,23 +204,22 @@ drawBoard i =
 
 
 -- Tile.elmで作成した関数を使ってタイルチップを配置（実際には単純に３つの平面を合成しただけ）
-
-arrangeCube : Int -> Int -> List (Svg msg)
-arrangeCube n i =
+stackCube : Int -> Int -> List (Svg msg)
+stackCube n i =
     let
         count =
-            outputQuarterLine n
+            stackQuarterLine n
                 |> SelectList.selectWhileLoopBy i
                 |> SelectList.index
 
         x =
-            outputQuarterLine n
+            stackQuarterLine n
                 |> SelectList.selectWhileLoopBy i
                 |> SelectList.selected
                 |> Tuple.first
 
         y =
-            outputQuarterLine n
+            stackQuarterLine n
                 |> SelectList.selectWhileLoopBy i
                 |> SelectList.selected
                 |> Tuple.second
@@ -255,14 +254,74 @@ arrangeCube n i =
                 []
             ]
 
+stackCubeList : Int -> Int -> List(Svg msg)
+stackCubeList n i =
+   case n of
+      0 -> []
+      _ -> List.foldr(::) (stackCube n i) (stackCubeList (n-1) i)
 
 
+arrangeCube : Int -> Int -> List (Svg msg)
+arrangeCube n i =
+    let
+        count =
+            outputQuarterLine n
+                |> SelectList.selectWhileLoopBy i
+                |> SelectList.index
 
+        x =
+            outputQuarterLine n
+                |> SelectList.selectWhileLoopBy i
+                |> SelectList.selected
+                |> Tuple.first
+
+        y =
+            outputQuarterLine n
+                |> SelectList.selectWhileLoopBy i
+                |> SelectList.selected
+                |> Tuple.second
+    in
+    case count of
+        0 ->
+            []
+
+        _ ->
+            [polygon
+                [ SvgAt.fill FillNone
+                , stroke Color.black
+                , strokeLinejoin StrokeLinejoinRound
+                , strokeWidth (px 1.0)
+                , strokeOpacity <| Opacity 0.0
+                , points <| (leftSide |> List.map (\( c, d ) -> ( c + x, d + y )))
+                ]
+                []
+            , polygon
+                 [ SvgAt.fill FillNone
+                , stroke Color.black
+                , strokeLinejoin StrokeLinejoinRound
+                , strokeWidth (px 1.0)
+                , strokeOpacity <| Opacity 0.0
+                , points <| (rightSide |> List.map (\( e, f ) -> ( e + x, f + y )))
+                ]
+                []
+             , polygon
+                [ SvgAt.fill FillNone
+                , stroke Color.black
+                , strokeLinejoin StrokeLinejoinRound
+                , strokeWidth (px 1.0)
+                , strokeOpacity <| Opacity 0.0
+                , points <| (top |> List.map (\( a, b ) -> ( a + x, b + y )))
+                ]
+                []
+            ]
+            
+            
 arrangeCubeList : Int -> Int -> List(Svg msg)
 arrangeCubeList n i =
    case n of
       0 -> []
       _ -> List.foldr(::) (arrangeCube n i) (arrangeCubeList (n-1) i)
+
 
 
 
@@ -280,7 +339,8 @@ drawRectsRed i j =
         , SvgAt.width (px 50)
         , SvgAt.height (px 50)
         , SvgAt.fill (Fill (Color.rgb255 208 16 76))
-        , fillOpacity (Opacity <| 0.9)
+        , stroke Color.black
+        , strokeWidth (pt 1.0)
         ]
         []
 
@@ -297,7 +357,8 @@ drawRectsBlue i j =
         , SvgAt.width (px 50)
         , SvgAt.height (px 50)
         , SvgAt.fill (Fill (Color.rgb255 0 92 175))
-        , fillOpacity (Opacity <| 0.9)
+        , stroke Color.black
+        , strokeWidth (pt 1.0)
         ]
         []
 
@@ -315,6 +376,8 @@ drawRectsGreen i j =
         , SvgAt.height (px 50)
         , SvgAt.fill (Fill (Color.rgb255 27 129 62))
         , fillOpacity (Opacity <| 0.9)
+        , stroke Color.black
+        , strokeWidth (pt 1.0)
         ]
         []
 
@@ -331,7 +394,8 @@ drawRectsYellow i j =
         , SvgAt.width (px 50)
         , SvgAt.height (px 50)
         , SvgAt.fill (Fill (Color.rgb255 239 187 36))
-        , fillOpacity (Opacity <| 0.9)
+        , stroke Color.black
+        , strokeWidth (pt 1.0)
         ]
         []
 
@@ -351,12 +415,14 @@ drawPoints i j =
         , r (px 10)
         ]
         []
-
-
+        
+        
 stackQuarterLine : Int -> SelectList.SelectList ( Float, Float )
-stackQuarterLine n = 
+stackQuarterLine n =
     createXYList n
         |> List.map (\( x, y ) -> ( quarterX x y , quarterY x y))
-        |> List.map (\( x, y) -> ( x, (y + 3 * h /  4)))
+        |> List.map (\( x, y) -> ( x, (y + h /  2)))
         |> SelectList.fromList
         |> Maybe.withDefault (SelectList.singleton ( 0.0, 0.0 ))
+
+

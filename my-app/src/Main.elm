@@ -124,7 +124,7 @@ changeTileColorRed n i =
 
         _ ->
             svg [ SvgAt.width (px 300), SvgAt.height (px 300), viewBox 0 0 300 300 ] <|
-                innerFuncTileRed (n + 1) i
+                inTileRed (n + 1) i
 
 
 changeTileColorBlue : Int -> Int -> Html Msg
@@ -143,7 +143,7 @@ changeTileColorBlue n i =
 
         _ ->
             svg [ SvgAt.width (px 300), SvgAt.height (px 300), viewBox 0 0 300 300 ] <|
-                innerFuncTileBlue (n + 1) i
+                inTileBlue (n + 1) i
 
 
 changeTileColorYellow : Int -> Int -> Html Msg
@@ -162,7 +162,7 @@ changeTileColorYellow n i =
 
         _ ->
             svg [ SvgAt.width (px 300), SvgAt.height (px 300), viewBox 0 0 300 300 ] <|
-                innerFuncTileYellow (n + 1) i
+                inTileYellow (n + 1) i
 
 
 changeTileColorGreen : Int -> Int -> Html Msg
@@ -181,11 +181,11 @@ changeTileColorGreen n i =
 
         _ ->
             svg [ SvgAt.width (px 300), SvgAt.height (px 300), viewBox 0 0 300 300 ] <|
-                innerFuncTileGreen (n + 1) i
+                inTileGreen (n + 1) i
 
 
-innerFuncTileRed : Int -> Int -> List (Svg msg)
-innerFuncTileRed n i =
+inTileRed : Int -> Int -> List (Svg msg)
+inTileRed n i =
     let
         count =
             Board.outputQuarterLine n
@@ -218,11 +218,35 @@ innerFuncTileRed n i =
                 , points <| (top |> List.map (\( a, b ) -> ( a + x, b + y )))
                 ]
                 []
+            , polygon
+                [ SvgAt.fill (Fill <| Color.rgb255 208 16 76)
+                , stroke Color.black
+                , strokeLinejoin StrokeLinejoinRound
+                , fillOpacity (Opacity <| 0.9)
+                , strokeWidth (pt 1.0)
+                , points <|
+                    (leftSide
+                        |> List.map (\( a, b ) -> ( a + x, b + y ))
+                    )
+                ]
+                []
+            , polygon
+                [ SvgAt.fill (Fill <| Color.rgb255 208 16 76)
+                , stroke Color.black
+                , strokeLinejoin StrokeLinejoinRound
+                , fillOpacity (Opacity <| 0.9)
+                , strokeWidth (pt 1.0)
+                , points <|
+                    (rightSide
+                        |> List.map (\( a, b ) -> ( a + x, b + y ))
+                    )
+                ]
+                []
             ]
 
 
-innerFuncTileBlue : Int -> Int -> List (Svg msg)
-innerFuncTileBlue n i =
+inTileBlue : Int -> Int -> List (Svg msg)
+inTileBlue n i =
     let
         count =
             Board.outputQuarterLine n
@@ -250,14 +274,40 @@ innerFuncTileBlue n i =
                 [ SvgAt.fill (Fill <| Color.rgb255 0 92 175)
                 , stroke Color.black
                 , strokeLinejoin StrokeLinejoinRound
+                , fillOpacity (Opacity <| 0.9)
+                , strokeWidth (pt 1.0)
                 , points <| (top |> List.map (\( a, b ) -> ( a + x, b + y )))
+                ]
+                []
+            , polygon
+                [ SvgAt.fill (Fill <| Color.rgb255 0 92 175)
+                , stroke Color.black
+                , strokeLinejoin StrokeLinejoinRound
+                , fillOpacity (Opacity <| 0.9)
+                , strokeWidth (pt 1.0)
+                , points <|
+                    (leftSide
+                        |> List.map (\( a, b ) -> ( a + x, b + y ))
+                    )
+                ]
+                []
+            , polygon
+                [ SvgAt.fill (Fill <| Color.rgb255 0 92 175)
+                , stroke Color.black
+                , strokeLinejoin StrokeLinejoinRound
+                , fillOpacity (Opacity <| 0.9)
+                , strokeWidth (pt 1.0)
+                , points <|
+                    (rightSide
+                        |> List.map (\( a, b ) -> ( a + x, b + y ))
+                    )
                 ]
                 []
             ]
 
 
-innerFuncTileYellow : Int -> Int -> List (Svg msg)
-innerFuncTileYellow n i =
+inTileYellow : Int -> Int -> List (Svg msg)
+inTileYellow n i =
     let
         count =
             Board.outputQuarterLine n
@@ -285,14 +335,40 @@ innerFuncTileYellow n i =
                 [ SvgAt.fill (Fill <| Color.rgb255 239 187 36)
                 , stroke Color.black
                 , strokeLinejoin StrokeLinejoinRound
+                , fillOpacity (Opacity <| 0.9)
+                , strokeWidth (pt 1.0)
                 , points <| (top |> List.map (\( a, b ) -> ( a + x, b + y )))
+                ]
+                []
+            , polygon
+                [ SvgAt.fill (Fill <| Color.rgb255 239 187 36)
+                , stroke Color.black
+                , strokeLinejoin StrokeLinejoinRound
+                , fillOpacity (Opacity <| 0.9)
+                , strokeWidth (pt 1.0)
+                , points <|
+                    (leftSide
+                        |> List.map (\( a, b ) -> ( a + x, b + y ))
+                    )
+                ]
+                []
+            , polygon
+                [ SvgAt.fill (Fill <| Color.rgb255 239 187 36)
+                , stroke Color.black
+                , strokeLinejoin StrokeLinejoinRound
+                , fillOpacity (Opacity <| 0.9)
+                , strokeWidth (pt 1.0)
+                , points <|
+                    (rightSide
+                        |> List.map (\( a, b ) -> ( a + x, b + y ))
+                    )
                 ]
                 []
             ]
 
 
-innerFuncTileGreen : Int -> Int -> List (Svg msg)
-innerFuncTileGreen n i =
+inTileGreen : Int -> Int -> List (Svg msg)
+inTileGreen n i =
     let
         count =
             Board.outputQuarterLine n
@@ -321,7 +397,32 @@ innerFuncTileGreen n i =
                 , stroke Color.black
                 , strokeLinejoin StrokeLinejoinRound
                 , fillOpacity (Opacity <| 0.9)
+                , strokeWidth (pt 1.0)
                 , points <| (top |> List.map (\( a, b ) -> ( a + x, b + y )))
+                ]
+                []
+            , polygon
+                [ SvgAt.fill (Fill <| Color.rgb255 27 129 62)
+                , stroke Color.black
+                , strokeLinejoin StrokeLinejoinRound
+                , fillOpacity (Opacity <| 0.9)
+                , strokeWidth (pt 1.0)
+                , points <|
+                    (leftSide
+                        |> List.map (\( a, b ) -> ( a + x, b + y ))
+                    )
+                ]
+                []
+            , polygon
+                [ SvgAt.fill (Fill <| Color.rgb255 27 129 62)
+                , stroke Color.black
+                , strokeLinejoin StrokeLinejoinRound
+                , fillOpacity (Opacity <| 0.9)
+                , strokeWidth (pt 1.0)
+                , points <|
+                    (rightSide
+                        |> List.map (\( a, b ) -> ( a + x, b + y ))
+                    )
                 ]
                 []
             ]
@@ -335,6 +436,16 @@ drawBaseCube i =
 
         _ ->
             List.foldr (::) (Board.arrangeCubeList (Board.max - 2) i |> List.reverse) <| drawBaseCube (i - 1)
+
+
+drawStackCube : Int -> List (Svg msg)
+drawStackCube i =
+    case i of
+        0 ->
+            []
+
+        _ ->
+            List.foldr (::) (Board.stackCubeList (Board.max - 2) i |> List.reverse) <| drawStackCube (i - 1)
 
 
 drawQuarterBoard : Int -> Html Msg
@@ -353,7 +464,7 @@ drawQuarterBoard i =
 
         _ ->
             svg [ SvgAt.width (px 300), SvgAt.height (px 300), viewBox 0 0 300 300 ] <|
-                drawBaseCube (i - 1)
+                List.foldr (::) (drawBaseCube (i - 1)) (drawStackCube (i - 1))
 
 
 
