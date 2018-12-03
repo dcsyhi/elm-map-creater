@@ -8,8 +8,6 @@
 * 駒を用意する
 
 * Ellieのアドレス
-https://ellie-app.com/44kRkLMnJpNa1
-最新
 https://ellie-app.com/44nvRNQvccTa1
 
 * 等角投影図について 
