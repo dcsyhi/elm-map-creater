@@ -1,4 +1,4 @@
-module Main exposing (Model, Msg(..), Order, Point, buttonChangeTile, changeTileColorBlue, changeTileColorGreen, changeTileColorRed, changeTileColorYellow, createList, createSelectList, createXYList, descending, drawBoard, drawColumn, drawColumnList, drawObjects, drawPoints, drawQuarterBoard, drawQuarterObjects, drawRectsBlue, drawRectsGreen, drawRectsRed, drawRectsYellow, drawRow, drawRowList, drawStackCube, getPointXList, getPointYList, h, inTileBlue, inTileGreen, inTileRed, inTileYellow, init, leftSide, main, max, offsetX, offsetY, orderCube, outputColumn, outputColumnRev, outputQuarterColumn, outputRow, quarterX, quarterY, rightSide, stackCube, stackCubeList, stackQuarterColumn, swap, top, update, view, w, zip)
+module Main exposing (Model, Msg(..), Order, Point, buttonChangeTile, changeTileColorBlue, changeTileColorGreen, changeTileColorRed, changeTileColorYellow, createList, createSelectList, createXYList, drawBoard, drawColumn, drawColumnList, drawObjects, drawPoints, drawQuarterBoard, drawQuarterObjects, drawRectsBlue, drawRectsGreen, drawRectsRed, drawRectsYellow, drawRow, drawRowList, drawStackCube, getPointXList, getPointYList, h, inTileBlue, inTileGreen, inTileRed, inTileYellow, init, leftSide, main, maxSize, offsetX, offsetY, orderCube, outputColumn, outputColumnRev, outputQuarterColumn, outputRow, quarterX, quarterY, rightSide, stackCube, stackCubeList, stackQuarterColumn, swap, top, update, view, w, zip)
 
 import Array exposing (..)
 import Browser
@@ -83,7 +83,7 @@ drawObjects : Int -> Int -> Html Msg
 drawObjects i j =
     svg
         [ SvgAt.width (px 300), SvgAt.height (px 300), viewBox 0 0 300 300 ]
-        [ drawBoard max
+        [ drawBoard maxSize
         , drawRectsRed (modBy 6 i) (modBy 7 j)
         , drawRectsBlue (modBy 6 (i + 1)) (modBy 7 (j + 1))
         , drawRectsGreen (modBy 6 (i + 2)) (modBy 7 (j + 2))
@@ -101,28 +101,28 @@ orderCube : Int -> Int -> List Order
 orderCube i j =
     let
         countRedFirst =
-            modBy (max - 2) (i + 0)
+            modBy (maxSize - 2) (i + 0)
 
         countBlueFirst =
-            modBy (max - 2) (i + 1)
+            modBy (maxSize - 2) (i + 1)
 
         countYellowFirst =
-            modBy (max - 2) (i + 3)
+            modBy (maxSize - 2) (i + 3)
 
         countGreenFirst =
-            modBy (max - 2) (i + 2)
+            modBy (maxSize - 2) (i + 2)
 
         countRedSecond =
-            modBy (max - 1) (j + 0)
+            modBy (maxSize - 1) (j + 0)
 
         countBlueSecond =
-            modBy (max - 1) (j + 1)
+            modBy (maxSize - 1) (j + 1)
 
         countGreenSecond =
-            modBy (max - 1) (j + 2)
+            modBy (maxSize - 1) (j + 2)
 
         countYellowSecond =
-            modBy (max - 1) (j + 3)
+            modBy (maxSize - 1) (j + 3)
 
         countOrderRed =
             -countRedFirst + countRedSecond
@@ -136,17 +136,13 @@ orderCube i j =
         countOrderYellow =
             -countYellowFirst + countYellowSecond
     in
-    [ Order -10 <| drawQuarterBoard max 0
+    [ Order -10 <| drawQuarterBoard maxSize 0
     , Order countOrderRed <|
         changeTileColorRed countRedFirst countRedSecond 1
     , Order countOrderRed <|
         changeTileColorRed countRedFirst countRedSecond 2
     , Order countOrderRed <|
         changeTileColorRed countRedFirst countRedSecond 3
-    , Order countOrderRed <|
-        changeTileColorRed countRedFirst countRedSecond 4
-    , Order countOrderRed <|
-        changeTileColorRed countRedFirst countRedSecond 5
     , Order countOrderBlue <|
         changeTileColorBlue countBlueFirst countBlueSecond 1
     , Order countOrderBlue <|
@@ -163,10 +159,6 @@ orderCube i j =
         changeTileColorGreen countGreenFirst countGreenSecond 2
     , Order countOrderGreen <|
         changeTileColorGreen countGreenFirst countGreenSecond 3
-    , Order countOrderGreen <|
-        changeTileColorGreen countGreenFirst countGreenSecond 4
-    , Order countOrderGreen <|
-        changeTileColorGreen countGreenFirst countGreenSecond 5
     , Order countOrderYellow <|
         changeTileColorYellow countYellowFirst countYellowSecond 1
     , Order countOrderYellow <|
@@ -175,21 +167,7 @@ orderCube i j =
         changeTileColorYellow countYellowFirst countYellowSecond 3
     , Order countOrderYellow <|
         changeTileColorYellow countYellowFirst countYellowSecond 4
-    , Order countOrderYellow <|
-        changeTileColorYellow countYellowFirst countYellowSecond 5
     ]
-
-
-descending a b =
-    case compare a b of
-        LT ->
-            GT
-
-        EQ ->
-            EQ
-
-        GT ->
-            LT
 
 
 drawQuarterObjects : Int -> Int -> Html Msg
@@ -208,7 +186,7 @@ drawStackCube i hgt =
 
         _ ->
             List.foldr (::)
-                (stackCubeList (max - 2) i hgt
+                (stackCubeList (maxSize - 2) i hgt
                     |> List.reverse
                 )
             <|
@@ -255,16 +233,15 @@ main =
 -- the number of maximum matrix size
 
 
-max =
+maxSize =
     8
 
 
 
--- 座標を作成するための型(pointは結局未使用)
+-- (x,y)座標と自身の情報を保持するPoint型を作成
 
 
 type alias Point a =
-    -- this means Point (x,y) and additional type
     { x : Int
     , y : Int
     , point : Array a
@@ -286,15 +263,140 @@ createList i j =
 
 
 
--- リストをSelectList化
+-- リストをSelectList化（maxSizeはリストの要素の最大数-1）
 
 
 createSelectList : Int -> SelectList.SelectList (Point String)
 createSelectList n =
     SelectList.fromLists []
         (Point 0 0 (Array.fromList [ "nothing" ]))
-        (createList n (max - 1) |> List.reverse)
+        (createList n (maxSize - 1) |> List.reverse)
+        -- 所望の順序と逆で出力されてしまうための対策
         |> SelectList.attempt SelectList.delete
+
+
+
+-- 空要素を削除(うまいこと作ればこれは必要なし)
+-- 格子点のx座標のリストを得る関数
+
+
+getPointXList : Int -> SelectList.SelectList Float
+getPointXList n =
+    createSelectList n
+        |> SelectList.map .x
+        -- Record型なのでこれで持ってこれる
+        |> SelectList.map (\m -> m * 10)
+        -- pixel指定で描画するための対応処理
+        |> SelectList.map toFloat
+
+
+
+-- 格子点のy座標のリストを得る関数
+
+
+getPointYList : Int -> SelectList.SelectList Float
+getPointYList n =
+    createSelectList n
+        |> SelectList.map .y
+        |> SelectList.map (\m -> m * 50)
+        -- 今回のマス目作成方針の弊害
+        |> SelectList.map toFloat
+
+
+
+-- 列方向に線を描くための関数： 所望の順序と逆で出力
+
+
+outputColumnRev : Int -> Float -> List ( Float, Float )
+outputColumnRev columnNum orderNum =
+    -- columnNum : 出力したい要素の数   orderNum : 列の何番目に線を描くか指定
+    let
+        head =
+            getPointYList maxSize |> SelectList.selectHead
+    in
+    if columnNum == (head |> SelectList.index) then
+        []
+
+    else
+        ( orderNum
+        , getPointYList maxSize
+            |> SelectList.attempt (SelectList.selectBy (columnNum - 1))
+            |> SelectList.selected
+        )
+            :: outputColumnRev (columnNum - 1) orderNum
+
+
+
+-- outputColumRevに対してList.inverseを適用し、出力順序を反転
+
+
+outputColumn : Int -> Float -> List ( Float, Float )
+outputColumn columnNum orderNum =
+    outputColumnRev columnNum orderNum |> List.reverse
+
+
+
+-- Svg化
+
+
+drawColumn : Int -> Svg msg
+drawColumn i =
+    polyline
+        [ SvgAt.fill FillNone
+        , stroke Color.black
+        , points <| outputColumn (maxSize + 1) (i * 50 |> toFloat)
+        ]
+        []
+
+
+
+-- 再帰を使ってリスト化し、複数描けるようにする
+
+
+drawColumnList : Int -> List (Svg msg)
+drawColumnList i =
+    case i of
+        0 ->
+            drawColumn 0 :: []
+
+        _ ->
+            drawColumn i :: drawColumnList (i - 1)
+
+
+swap : ( a, b ) -> ( b, a )
+swap ( a, b ) =
+    ( b, a )
+
+
+outputRow : Int -> Float -> List ( Float, Float )
+outputRow rowNum orderNum =
+    outputColumn rowNum orderNum |> List.map swap
+
+
+drawRow : Int -> Svg msg
+drawRow i =
+    polyline
+        [ SvgAt.fill FillNone
+        , stroke Color.black
+        , points <| outputRow maxSize (i * 50 |> toFloat)
+        ]
+        []
+
+
+drawRowList : Int -> List (Svg msg)
+drawRowList i =
+    case i of
+        0 ->
+            drawRow 0 :: []
+
+        _ ->
+            drawRow i :: drawRowList (i - 1)
+
+
+drawBoard : Int -> Svg msg
+drawBoard i =
+    svg [ SvgAt.width (px 1000), SvgAt.height (px 1000), viewBox 0 0 1000 1000 ] <|
+        List.foldr (::) (drawRowList maxSize) (drawColumnList maxSize)
 
 
 zip : List a -> List b -> List ( a, b )
@@ -336,104 +438,6 @@ outputQuarterColumn n =
         |> List.map (\( x, y ) -> ( quarterX x y, quarterY x y ))
         |> SelectList.fromList
         |> Maybe.withDefault (SelectList.singleton ( 0.0, 0.0 ))
-
-
-getPointXList : Int -> SelectList.SelectList Float
-getPointXList n =
-    createSelectList n
-        |> SelectList.map .x
-        |> SelectList.map (\m -> m * 10)
-        |> SelectList.map toFloat
-
-
-getPointYList : Int -> SelectList.SelectList Float
-getPointYList n =
-    createSelectList n
-        |> SelectList.map .y
-        |> SelectList.map (\m -> m * 50)
-        |> SelectList.map toFloat
-
-
-outputColumnRev : Int -> Float -> List ( Float, Float )
-outputColumnRev num px =
-    let
-        py =
-            max
-
-        head =
-            getPointYList py |> SelectList.selectHead
-    in
-    if num == (head |> SelectList.index) then
-        []
-
-    else
-        ( px
-        , getPointYList py
-            |> SelectList.attempt (SelectList.selectBy (num - 1))
-            |> SelectList.selected
-        )
-            :: outputColumnRev (num - 1) px
-
-
-outputColumn : Int -> Float -> List ( Float, Float )
-outputColumn num px =
-    outputColumnRev num px |> List.reverse
-
-
-drawColumn : Int -> Svg msg
-drawColumn i =
-    polyline
-        [ SvgAt.fill FillNone
-        , stroke Color.black
-        , points <| outputColumn (max + 1) (i * 50 |> toFloat)
-        ]
-        []
-
-
-drawColumnList : Int -> List (Svg msg)
-drawColumnList i =
-    case i of
-        0 ->
-            drawColumn 0 :: []
-
-        _ ->
-            drawColumn i :: drawColumnList (i - 1)
-
-
-swap : ( a, b ) -> ( b, a )
-swap ( a, b ) =
-    ( b, a )
-
-
-outputRow : Int -> Float -> List ( Float, Float )
-outputRow num py =
-    outputColumn num py |> List.map swap
-
-
-drawRow : Int -> Svg msg
-drawRow i =
-    polyline
-        [ SvgAt.fill FillNone
-        , stroke Color.black
-        , points <| outputRow max (i * 50 |> toFloat)
-        ]
-        []
-
-
-drawRowList : Int -> List (Svg msg)
-drawRowList i =
-    case i of
-        0 ->
-            drawRow 0 :: []
-
-        _ ->
-            drawRow i :: drawRowList (i - 1)
-
-
-drawBoard : Int -> Svg msg
-drawBoard i =
-    svg [ SvgAt.width (px 1000), SvgAt.height (px 1000), viewBox 0 0 1000 1000 ] <|
-        List.foldr (::) (drawRowList max) (drawColumnList max)
 
 
 
@@ -521,7 +525,7 @@ drawRectsRed i j =
                 (getPointXList (i * 5) |> SelectList.selectWhileLoopBy i |> SelectList.selected)
         , y <|
             px <|
-                (getPointYList max |> SelectList.selectWhileLoopBy j |> SelectList.selected)
+                (getPointYList maxSize |> SelectList.selectWhileLoopBy j |> SelectList.selected)
         , SvgAt.width (px 50)
         , SvgAt.height (px 50)
         , SvgAt.fill (Fill (Color.rgb255 208 16 76))
@@ -539,7 +543,7 @@ drawRectsBlue i j =
                 (getPointXList (i * 5) |> SelectList.selectWhileLoopBy i |> SelectList.selected)
         , y <|
             px <|
-                (getPointYList max |> SelectList.selectWhileLoopBy j |> SelectList.selected)
+                (getPointYList maxSize |> SelectList.selectWhileLoopBy j |> SelectList.selected)
         , SvgAt.width (px 50)
         , SvgAt.height (px 50)
         , SvgAt.fill (Fill (Color.rgb255 0 92 175))
@@ -557,7 +561,7 @@ drawRectsGreen i j =
                 (getPointXList (i * 5) |> SelectList.selectWhileLoopBy i |> SelectList.selected)
         , y <|
             px <|
-                (getPointYList max |> SelectList.selectWhileLoopBy j |> SelectList.selected)
+                (getPointYList maxSize |> SelectList.selectWhileLoopBy j |> SelectList.selected)
         , SvgAt.width (px 50)
         , SvgAt.height (px 50)
         , SvgAt.fill (Fill (Color.rgb255 27 129 62))
@@ -576,7 +580,7 @@ drawRectsYellow i j =
                 (getPointXList (i * 5) |> SelectList.selectWhileLoopBy i |> SelectList.selected)
         , y <|
             px <|
-                (getPointYList max |> SelectList.selectWhileLoopBy j |> SelectList.selected)
+                (getPointYList maxSize |> SelectList.selectWhileLoopBy j |> SelectList.selected)
         , SvgAt.width (px 50)
         , SvgAt.height (px 50)
         , SvgAt.fill (Fill (Color.rgb255 239 187 36))
@@ -926,7 +930,7 @@ drawPoints i j =
                 (getPointXList (i * 5) |> SelectList.selectWhileLoopBy i |> SelectList.selected)
         , cy <|
             px <|
-                (getPointYList max |> SelectList.selectWhileLoopBy j |> SelectList.selected)
+                (getPointYList maxSize |> SelectList.selectWhileLoopBy j |> SelectList.selected)
         , r (px 10)
         ]
         []
