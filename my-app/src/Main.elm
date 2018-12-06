@@ -17,8 +17,8 @@ import TypedSvg.Types exposing (..)
 
 
 
----- MODEL ----
--- maxSizeは原点を含む要素の最大数
+---- グローバル変数 ------
+{- maxSizeは原点を含む要素の最大数 -}
 
 
 maxSize =
@@ -26,15 +26,23 @@ maxSize =
 
 
 
--- マス目の一辺の長さ
+{- マス目の一辺の長さ(x方向) -}
 
 
 tileWidth =
     50
 
 
+
+{- マス目の一辺の長さ(y方向) -}
+
+
 tileHeight =
     50
+
+
+
+---- MODEL ----
 
 
 type alias Model =
@@ -63,8 +71,6 @@ type Msg
     | Reset
 
 
-{-| TO DO: Something explanations
--}
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
@@ -198,27 +204,6 @@ drawQuarterObjects i j =
             (orderCube i j |> List.sortBy .index |> List.map .element)
 
 
-drawStackCube : Int -> Int -> List (Svg msg)
-drawStackCube i hgt =
-    case i of
-        0 ->
-            []
-
-        _ ->
-            List.foldr (::)
-                (stackCubeList (maxSize - 2) i hgt
-                    |> List.reverse
-                )
-            <|
-                drawStackCube (i - 1) hgt
-
-
-drawQuarterBoard : Int -> Int -> Html Msg
-drawQuarterBoard i hgt =
-    svg [ SvgAt.width (px 1000), SvgAt.height (px 1000), viewBox 0 0 1000 1000 ] <|
-        List.foldr (::) [] (drawStackCube (i - 1) hgt)
-
-
 
 ---- MODEL ----
 
@@ -249,7 +234,7 @@ main =
 
 
 
--- (x,y)座標と自身の情報を保持するPoint型を作成
+{- (x,y)座標と自身の情報を保持するPoint型を作成 -}
 
 
 type alias Point a =
@@ -260,7 +245,7 @@ type alias Point a =
 
 
 
--- マス目を作るために座標のリストを作成する
+{- マス目を作るために座標のリストを作成する -}
 
 
 createList : Int -> Int -> List (Point String)
@@ -274,7 +259,7 @@ createList i j =
 
 
 
--- リストをSelectList化（maxSizeはリストの要素の最大数-1）
+{- リストをSelectList化（maxSizeは原点を含む要素の最大数） -}
 
 
 createSelectList : Int -> SelectList.SelectList (Point String)
@@ -288,7 +273,7 @@ createSelectList n =
 
 
 
--- 格子点のx座標のリストを得る関数
+{- 格子点のx座標のリストを得る関数 -}
 
 
 getPointXList : Int -> SelectList.SelectList Float
@@ -300,7 +285,7 @@ getPointXList n =
 
 
 
--- 格子点のy座標のリストを得る関数
+{- 格子点のy座標のリストを得る関数 -}
 
 
 getPointYList : Int -> SelectList.SelectList Float
@@ -312,7 +297,7 @@ getPointYList n =
 
 
 
--- 列方向に線を描くための関数： 所望の順序と逆で出力
+{- 列方向に線を描くための関数： 所望の順序と逆で出力される -}
 
 
 outputColumnRev : Int -> Float -> List ( Float, Float )
@@ -335,7 +320,7 @@ outputColumnRev columnNum orderNum =
 
 
 
--- outputColumRevに対してList.inverseを適用し、出力順序を反転
+{- outputColumRevに対してList.inverseを適用し、出力順序を反転 -}
 
 
 outputColumn : Int -> Float -> List ( Float, Float )
@@ -344,7 +329,7 @@ outputColumn columnNum orderNum =
 
 
 
--- Svg化
+{- outputColumnをSvg化する -}
 
 
 drawColumn : Int -> Svg msg
@@ -358,7 +343,7 @@ drawColumn i =
 
 
 
--- 再帰を使ってリスト化し、複数描けるようにする
+{- 再帰を使ってリスト化し、複数描けるようにする -}
 
 
 drawColumnList : Int -> List (Svg msg)
@@ -401,19 +386,23 @@ drawRowList i =
             drawRow i :: drawRowList (i - 1)
 
 
+
+{- List.foldr (::)`で畳み込みを行いつつ`drawColumnList`と`drawRowList`をまとめてSvg化する -}
+
+
 drawBoard : Int -> Svg msg
 drawBoard i =
     svg [ SvgAt.width (px 300), SvgAt.height (px 300), viewBox 0 0 300 300 ] <|
         List.foldr (::) (drawRowList maxSize) (drawColumnList maxSize)
 
 
+
+-- クォータービューを実装するために座標変換後のリストを作成する
+
+
 zip : List a -> List b -> List ( a, b )
 zip xs ys =
     List.map2 Tuple.pair xs ys
-
-
-
--- クォータービューを実装するために座標変換後のリストを作成する
 
 
 createXYList : Int -> List ( Float, Float )
@@ -926,24 +915,6 @@ inTileGreen n i hgt =
             ]
 
 
-
-{- drawPoints:マス目に点を打つための関数(使っていない) -}
-
-
-drawPoints : Int -> Int -> Svg msg
-drawPoints i j =
-    circle
-        [ cx <|
-            px <|
-                (getPointXList i |> SelectList.selectWhileLoopBy i |> SelectList.selected)
-        , cy <|
-            px <|
-                (getPointYList j |> SelectList.selectWhileLoopBy j |> SelectList.selected)
-        , r (px 10)
-        ]
-        []
-
-
 stackQuarterColumn : Int -> Int -> SelectList.SelectList ( Float, Float )
 stackQuarterColumn n hgt =
     createXYList n
@@ -951,6 +922,27 @@ stackQuarterColumn n hgt =
         |> List.map (\( x, y ) -> ( x, y - (hgt |> toFloat) * h / 2 ))
         |> SelectList.fromList
         |> Maybe.withDefault (SelectList.singleton ( 0.0, 0.0 ))
+
+
+drawStackCube : Int -> Int -> List (Svg msg)
+drawStackCube i hgt =
+    case i of
+        0 ->
+            []
+
+        _ ->
+            List.foldr (::)
+                (stackCubeList (maxSize - 2) i hgt
+                    |> List.reverse
+                )
+            <|
+                drawStackCube (i - 1) hgt
+
+
+drawQuarterBoard : Int -> Int -> Html Msg
+drawQuarterBoard i hgt =
+    svg [ SvgAt.width (px 1000), SvgAt.height (px 1000), viewBox 0 0 1000 1000 ] <|
+        List.foldr (::) [] (drawStackCube (i - 1) hgt)
 
 
 
@@ -1011,3 +1003,21 @@ leftSide =
 rightSide : List ( Float, Float )
 rightSide =
     [ ( w / 2, h / 2 ), ( w, h / 4 ), ( w, 3 * h / 4 ), ( w / 2, h ) ]
+
+
+
+{- drawPoints:マス目に点を打つための関数(使っていない) -}
+
+
+drawPoints : Int -> Int -> Svg msg
+drawPoints i j =
+    circle
+        [ cx <|
+            px <|
+                (getPointXList i |> SelectList.selectWhileLoopBy i |> SelectList.selected)
+        , cy <|
+            px <|
+                (getPointYList j |> SelectList.selectWhileLoopBy j |> SelectList.selected)
+        , r (px 10)
+        ]
+        []
