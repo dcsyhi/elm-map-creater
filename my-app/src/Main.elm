@@ -1,4 +1,4 @@
-module Main exposing (Model, Msg(..), buttonChangeTile, drawObjects, drawQuarterBoard, drawQuarterObjects, init, main, update, view)
+module Main exposing (Model, Msg(..), Order, Point, buttonChangeTile, changeTileColorBlue, changeTileColorGreen, changeTileColorRed, changeTileColorYellow, createList, createSelectList, createXYList, drawBoard, drawColumn, drawColumnList, drawObjects, drawPoints, drawQuarterBoard, drawQuarterObjects, drawRectBlue, drawRectGreen, drawRectRed, drawRectYellow, drawRow, drawRowList, drawStackCube, getPointXList, getPointYList, h, inTileBlue, inTileGreen, inTileRed, inTileYellow, init, leftSide, main, maxSize, offsetX, offsetY, orderCube, outputColumn, outputColumnRev, outputQuarterColumn, outputRow, quarterX, quarterY, rightSide, stackCube, stackCubeList, stackQuarterColumn, swap, tileHeight, tileWidth, top, update, view, w, zip)
 
 import Array exposing (..)
 import Browser
@@ -21,6 +21,7 @@ import TypedSvg.Types exposing (..)
 {- maxSizeは原点を含む要素の最大数 -}
 
 
+maxSize : Int
 maxSize =
     8
 
@@ -201,7 +202,7 @@ drawQuarterObjects i j =
     svg [ SvgAt.width (px 1000), SvgAt.height (px 1000), viewBox 0 0 1000 1000 ] <|
         List.foldr (::)
             []
-            (orderCube i j |> List.sortBy .index |> List.map .element)
+            (orderCube i (j + 1) |> List.sortBy .index |> List.map .element)
 
 
 
@@ -215,7 +216,7 @@ view model =
         , hr [] []
         , drawObjects model.columnCount model.rowCount
         , hr [] []
-        , drawQuarterObjects model.columnCount (model.rowCount + 1)
+        , drawQuarterObjects model.columnCount model.rowCount
         ]
 
 
@@ -954,18 +955,22 @@ drawQuarterBoard i hgt =
 -}
 
 
+h : Float
 h =
     44
 
 
+w : Float
 w =
     44
 
 
+offsetX : Float
 offsetX =
     50
 
 
+offsetY : Float
 offsetY =
     130
 
