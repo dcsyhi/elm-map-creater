@@ -21,6 +21,7 @@ import TypedSvg.Types exposing (..)
 {- maxSizeは原点を含む要素の最大数 -}
 
 
+maxSize : Int
 maxSize =
     8
 
@@ -954,18 +955,22 @@ drawQuarterBoard i hgt =
 -}
 
 
+h : Float
 h =
     44
 
 
+w : Float
 w =
     44
 
 
+offsetX : Float
 offsetX =
     50
 
 
+offsetY : Float
 offsetY =
     130
 
