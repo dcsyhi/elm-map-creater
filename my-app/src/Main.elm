@@ -1,4 +1,4 @@
-module Main exposing (Model, Msg(..), Order, Point, buttonChangeTile, changeTileColorBlue, changeTileColorGreen, changeTileColorRed, changeTileColorYellow, createList, createSelectList, createXYList, drawBoard, drawColumn, drawColumnList, drawObjects, drawPoints, drawQuarterBoard, drawQuarterObjects, drawRectsBlue, drawRectsGreen, drawRectsRed, drawRectsYellow, drawRow, drawRowList, drawStackCube, getPointXList, getPointYList, h, inTileBlue, inTileGreen, inTileRed, inTileYellow, init, leftSide, main, maxSize, offsetX, offsetY, orderCube, outputColumn, outputColumnRev, outputQuarterColumn, outputRow, quarterX, quarterY, rightSide, stackCube, stackCubeList, stackQuarterColumn, swap, top, update, view, w, zip)
+module Main exposing (Model, Msg(..), buttonChangeTile, drawObjects, drawQuarterBoard, drawQuarterObjects, init, main, update, view)
 
 import Array exposing (..)
 import Browser
@@ -18,6 +18,23 @@ import TypedSvg.Types exposing (..)
 
 
 ---- MODEL ----
+-- maxSizeは原点を含む要素の最大数
+
+
+maxSize =
+    8
+
+
+
+-- マス目の一辺の長さ
+
+
+tileWidth =
+    50
+
+
+tileHeight =
+    50
 
 
 type alias Model =
@@ -82,12 +99,15 @@ buttonChangeTile =
 drawObjects : Int -> Int -> Html Msg
 drawObjects i j =
     svg
-        [ SvgAt.width (px 300), SvgAt.height (px 300), viewBox 0 0 300 300 ]
+        [ SvgAt.width <| px <| 300
+        , SvgAt.height <| px <| 300
+        , viewBox 0 0 300 300
+        ]
         [ drawBoard maxSize
-        , drawRectsRed (modBy 6 i) (modBy 7 j)
-        , drawRectsBlue (modBy 6 (i + 1)) (modBy 7 (j + 1))
-        , drawRectsGreen (modBy 6 (i + 2)) (modBy 7 (j + 2))
-        , drawRectsYellow (modBy 6 (i + 3)) (modBy 7 (j + 3))
+        , drawRectRed (modBy 6 i) (modBy 7 j)
+        , drawRectBlue (modBy 6 (i + 1)) (modBy 7 (j + 1))
+        , drawRectGreen (modBy 6 (i + 2)) (modBy 7 (j + 2))
+        , drawRectYellow (modBy 6 (i + 3)) (modBy 7 (j + 3))
         ]
 
 
@@ -229,15 +249,6 @@ main =
 
 
 
--- Board.elm
--- the number of maximum matrix size
-
-
-maxSize =
-    8
-
-
-
 -- (x,y)座標と自身の情報を保持するPoint型を作成
 
 
@@ -270,13 +281,13 @@ createSelectList : Int -> SelectList.SelectList (Point String)
 createSelectList n =
     SelectList.fromLists []
         (Point 0 0 (Array.fromList [ "nothing" ]))
+        -- 所望の順序と逆で出力されてしまうため反転させる
         (createList n (maxSize - 1) |> List.reverse)
-        -- 所望の順序と逆で出力されてしまうための対策
+        -- 空要素を削除(うまいこと作ればこれは必要なし)
         |> SelectList.attempt SelectList.delete
 
 
 
--- 空要素を削除(うまいこと作ればこれは必要なし)
 -- 格子点のx座標のリストを得る関数
 
 
@@ -284,9 +295,7 @@ getPointXList : Int -> SelectList.SelectList Float
 getPointXList n =
     createSelectList n
         |> SelectList.map .x
-        -- Record型なのでこれで持ってこれる
-        |> SelectList.map (\m -> m * 10)
-        -- pixel指定で描画するための対応処理
+        |> SelectList.map (\m -> m * tileWidth)
         |> SelectList.map toFloat
 
 
@@ -298,8 +307,7 @@ getPointYList : Int -> SelectList.SelectList Float
 getPointYList n =
     createSelectList n
         |> SelectList.map .y
-        |> SelectList.map (\m -> m * 50)
-        -- 今回のマス目作成方針の弊害
+        |> SelectList.map (\m -> m * tileHeight)
         |> SelectList.map toFloat
 
 
@@ -344,7 +352,7 @@ drawColumn i =
     polyline
         [ SvgAt.fill FillNone
         , stroke Color.black
-        , points <| outputColumn (maxSize + 1) (i * 50 |> toFloat)
+        , points <| outputColumn (maxSize + 1) (i * tileWidth |> toFloat)
         ]
         []
 
@@ -378,7 +386,7 @@ drawRow i =
     polyline
         [ SvgAt.fill FillNone
         , stroke Color.black
-        , points <| outputRow maxSize (i * 50 |> toFloat)
+        , points <| outputRow maxSize (i * tileHeight |> toFloat)
         ]
         []
 
@@ -395,7 +403,7 @@ drawRowList i =
 
 drawBoard : Int -> Svg msg
 drawBoard i =
-    svg [ SvgAt.width (px 1000), SvgAt.height (px 1000), viewBox 0 0 1000 1000 ] <|
+    svg [ SvgAt.width (px 300), SvgAt.height (px 300), viewBox 0 0 300 300 ] <|
         List.foldr (::) (drawRowList maxSize) (drawColumnList maxSize)
 
 
@@ -517,17 +525,17 @@ stackCubeList n i hgt =
 -- 2次元のマス目に色付きタイルを置くための関数（赤、黄、緑、青の４色を用意）
 
 
-drawRectsRed : Int -> Int -> Svg msg
-drawRectsRed i j =
+drawRectRed : Int -> Int -> Svg msg
+drawRectRed i j =
     rect
         [ x <|
             px <|
-                (getPointXList (i * 5) |> SelectList.selectWhileLoopBy i |> SelectList.selected)
+                (getPointXList i |> SelectList.selectWhileLoopBy i |> SelectList.selected)
         , y <|
             px <|
-                (getPointYList maxSize |> SelectList.selectWhileLoopBy j |> SelectList.selected)
-        , SvgAt.width (px 50)
-        , SvgAt.height (px 50)
+                (getPointYList j |> SelectList.selectWhileLoopBy j |> SelectList.selected)
+        , SvgAt.width (px tileWidth)
+        , SvgAt.height (px tileHeight)
         , SvgAt.fill (Fill (Color.rgb255 208 16 76))
         , stroke Color.black
         , strokeWidth (pt 1.0)
@@ -535,17 +543,17 @@ drawRectsRed i j =
         []
 
 
-drawRectsBlue : Int -> Int -> Svg msg
-drawRectsBlue i j =
+drawRectBlue : Int -> Int -> Svg msg
+drawRectBlue i j =
     rect
         [ x <|
             px <|
-                (getPointXList (i * 5) |> SelectList.selectWhileLoopBy i |> SelectList.selected)
+                (getPointXList i |> SelectList.selectWhileLoopBy i |> SelectList.selected)
         , y <|
             px <|
-                (getPointYList maxSize |> SelectList.selectWhileLoopBy j |> SelectList.selected)
-        , SvgAt.width (px 50)
-        , SvgAt.height (px 50)
+                (getPointYList j |> SelectList.selectWhileLoopBy j |> SelectList.selected)
+        , SvgAt.width (px tileWidth)
+        , SvgAt.height (px tileHeight)
         , SvgAt.fill (Fill (Color.rgb255 0 92 175))
         , stroke Color.black
         , strokeWidth (pt 1.0)
@@ -553,17 +561,17 @@ drawRectsBlue i j =
         []
 
 
-drawRectsGreen : Int -> Int -> Svg msg
-drawRectsGreen i j =
+drawRectGreen : Int -> Int -> Svg msg
+drawRectGreen i j =
     rect
         [ x <|
             px <|
-                (getPointXList (i * 5) |> SelectList.selectWhileLoopBy i |> SelectList.selected)
+                (getPointXList i |> SelectList.selectWhileLoopBy i |> SelectList.selected)
         , y <|
             px <|
-                (getPointYList maxSize |> SelectList.selectWhileLoopBy j |> SelectList.selected)
-        , SvgAt.width (px 50)
-        , SvgAt.height (px 50)
+                (getPointYList j |> SelectList.selectWhileLoopBy j |> SelectList.selected)
+        , SvgAt.width (px tileWidth)
+        , SvgAt.height (px tileHeight)
         , SvgAt.fill (Fill (Color.rgb255 27 129 62))
         , fillOpacity (Opacity <| 0.9)
         , stroke Color.black
@@ -572,17 +580,17 @@ drawRectsGreen i j =
         []
 
 
-drawRectsYellow : Int -> Int -> Svg msg
-drawRectsYellow i j =
+drawRectYellow : Int -> Int -> Svg msg
+drawRectYellow i j =
     rect
         [ x <|
             px <|
-                (getPointXList (i * 5) |> SelectList.selectWhileLoopBy i |> SelectList.selected)
+                (getPointXList i |> SelectList.selectWhileLoopBy i |> SelectList.selected)
         , y <|
             px <|
-                (getPointYList maxSize |> SelectList.selectWhileLoopBy j |> SelectList.selected)
-        , SvgAt.width (px 50)
-        , SvgAt.height (px 50)
+                (getPointYList j |> SelectList.selectWhileLoopBy j |> SelectList.selected)
+        , SvgAt.width (px tileWidth)
+        , SvgAt.height (px tileHeight)
         , SvgAt.fill (Fill (Color.rgb255 239 187 36))
         , stroke Color.black
         , strokeWidth (pt 1.0)
@@ -927,10 +935,10 @@ drawPoints i j =
     circle
         [ cx <|
             px <|
-                (getPointXList (i * 5) |> SelectList.selectWhileLoopBy i |> SelectList.selected)
+                (getPointXList i |> SelectList.selectWhileLoopBy i |> SelectList.selected)
         , cy <|
             px <|
-                (getPointYList maxSize |> SelectList.selectWhileLoopBy j |> SelectList.selected)
+                (getPointYList j |> SelectList.selectWhileLoopBy j |> SelectList.selected)
         , r (px 10)
         ]
         []
