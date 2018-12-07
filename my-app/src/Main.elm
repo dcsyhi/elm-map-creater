@@ -1,4 +1,4 @@
-module Main exposing (Model, Msg(..), Order, Point, boardHeight, boardWidth, buttonMoveTile, createBuilding, createList, createSelectList, createXYList, drawBaseCube, drawBoard, drawColumn, drawColumnList, drawObjects, drawPoints, drawQuarterBoard, drawQuarterObjects, drawRectBlue, drawRectGreen, drawRectRed, drawRectYellow, drawRow, drawRowList, drawStackCube, getPointXList, getPointYList, h, inTileBlue, inTileGreen, inTileRed, inTileYellow, init, leftSide, main, maxSize, offsetX, offsetY, orderCube, outputColumn, outputColumnRev, outputQuarterColumn, outputRow, quarterX, quarterY, rightSide, stackCube, stackCubeList, stackQuarterList, stackTileColorBlue, stackTileColorGreen, stackTileColorRed, stackTileColorYellow, swap, tileHeight, tileWidth, top, update, view, w, zip)
+module Main exposing (Model, Msg(..), buttonMoveTile, drawObjects, drawQuarterBoard, drawQuarterObjects, init, main, update, view)
 
 import Array exposing (..)
 import Browser
@@ -121,10 +121,10 @@ drawObjects i j =
         , viewBox 0 0 300 300
         ]
         [ drawBoard maxSize
-        , drawRectRed (modBy (maxSize - 2) i) (modBy (maxSize - 2) j)
-        , drawRectBlue (modBy (maxSize - 2) (i + 1)) (modBy (maxSize - 2) (j + 1))
-        , drawRectGreen (modBy (maxSize - 2) (i + 2)) (modBy (maxSize - 2) (j + 2))
-        , drawRectYellow (modBy (maxSize - 2) (i + 3)) (modBy (maxSize - 2) (j + 3))
+        , drawRectRed (modBy (maxSize - 2) i) (modBy (maxSize - 1) j)
+        , drawRectBlue (modBy (maxSize - 2) (i + 1)) (modBy (maxSize - 1) (j + 1))
+        , drawRectGreen (modBy (maxSize - 2) (i + 2)) (modBy (maxSize - 1) (j + 2))
+        , drawRectYellow (modBy (maxSize - 2) (i + 3)) (modBy (maxSize - 1) (j + 3))
         ]
 
 
@@ -150,16 +150,16 @@ orderCube i j =
             modBy (boardWidth - 2) (i + 3)
 
         countRedSecond =
-            modBy (boardHeight - 2) (j + 0)
+            modBy (boardHeight - 1) (j + 0)
 
         countBlueSecond =
-            modBy (boardHeight - 2) (j + 1)
+            modBy (boardHeight - 1) (j + 1)
 
         countGreenSecond =
-            modBy (boardHeight - 2) (j + 2)
+            modBy (boardHeight - 1) (j + 2)
 
         countYellowSecond =
-            modBy (boardHeight - 2) (j + 3)
+            modBy (boardHeight - 1) (j + 3)
 
         countOrderRed =
             -countRedFirst + countRedSecond
@@ -173,37 +173,63 @@ orderCube i j =
         countOrderYellow =
             -countYellowFirst + countYellowSecond
     in
-    [ Order -100 <| drawQuarterBoard maxSize maxSize 0
+    [ Order -100 <| drawQuarterBoard boardWidth boardHeight 0
     , Order countOrderRed <|
         stackTileColorRed countRedFirst countRedSecond 1
-
-    --    , Order countOrderRed <|
-    --        stackTileColorRed countRedFirst countRedSecond 2
-    --    , Order countOrderRed <|
-    --        stackTileColorRed countRedFirst countRedSecond 3
-    --    , Order countOrderBlue <|
+    , Order countOrderRed <|
+        stackTileColorRed countRedFirst countRedSecond 2
+    , Order countOrderRed <|
+        stackTileColorRed countRedFirst countRedSecond 3
+    , Order countOrderRed <|
+        stackTileColorRed countRedFirst countRedSecond 4
+    , Order countOrderRed <|
+        stackTileColorRed countRedFirst countRedSecond 5
+    , Order countOrderBlue <|
+        stackTileColorBlue countBlueFirst countBlueSecond 1
+    , Order countOrderBlue <|
+        stackTileColorBlue countBlueFirst countBlueSecond 2
+    , Order countOrderBlue <|
+        stackTileColorBlue countBlueFirst countBlueSecond 3
+    , Order countOrderBlue <|
+        stackTileColorBlue countBlueFirst countBlueSecond 4
+    , Order countOrderBlue <|
+        stackTileColorBlue countBlueFirst countBlueSecond 5
+    , Order countOrderGreen <|
+        stackTileColorGreen countGreenFirst countGreenSecond 1
+    , Order countOrderGreen <|
+        stackTileColorGreen countGreenFirst countGreenSecond 2
+    , Order countOrderGreen <|
+        stackTileColorGreen countGreenFirst countGreenSecond 3
+    , Order countOrderYellow <|
+        stackTileColorYellow countYellowFirst countYellowSecond 1
+    , Order countOrderYellow <|
+        stackTileColorYellow countYellowFirst countYellowSecond 2
+    , Order countOrderYellow <|
+        stackTileColorYellow countYellowFirst countYellowSecond 3
+    , Order countOrderYellow <|
+        stackTileColorYellow countYellowFirst countYellowSecond 4
     ]
 
 
-createBuilding : Int -> Int -> List (Html Msg)
-createBuilding i j =
-    case i of
-        0 ->
-            List.foldr (::)
-                [ stackTileColorRed 0 (j - 1) 1 ]
-            <|
-                createBuilding 0 (j - 1)
 
-        _ ->
-            case j of
-                0 ->
-                    []
+{- 開発中
+   createBuilding : Int -> Int -> List Order
+   createBuilding i j =
+       case i of
+          0 ->
+                List.foldr (::)
+                   ( Order j <| stackTileColorRed 0 (j-1) 1)
+                      <|
+                         createBuilding 0 (j-1)
+          _ ->
+             case j of
+                  0 ->
+                      []
+                  _ ->
+                     List.foldr (::)
+                          ( Order (i + j) stackTileColorRed (i-1)(j-1) 1) <| (createBuilding i (j-1))
 
-                _ ->
-                    List.foldr (::)
-                        [ stackTileColorRed (i - 1) (j - 1) 1 ]
-                    <|
-                        createBuilding i (j - 1)
+-}
 
 
 drawQuarterObjects : Int -> Int -> Html Msg
@@ -603,15 +629,7 @@ drawRectYellow i j =
 
 stackTileColorRed : Int -> Int -> Int -> Html Msg
 stackTileColorRed n i stackNum =
-    let
-        count =
-            List.range 0 i
-                |> SelectList.fromList
-                |> Maybe.withDefault (SelectList.singleton 0)
-                |> SelectList.selectWhileLoopBy i
-                |> SelectList.selected
-    in
-    case count of
+    case i of
         0 ->
             svg [] []
 
@@ -622,15 +640,7 @@ stackTileColorRed n i stackNum =
 
 stackTileColorBlue : Int -> Int -> Int -> Html Msg
 stackTileColorBlue n i stackNum =
-    let
-        count =
-            List.range 0 i
-                |> SelectList.fromList
-                |> Maybe.withDefault (SelectList.singleton 0)
-                |> SelectList.selectWhileLoopBy i
-                |> SelectList.selected
-    in
-    case count of
+    case i of
         0 ->
             svg [] []
 
