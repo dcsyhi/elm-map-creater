@@ -1,4 +1,4 @@
-module Main exposing (Model, Msg(..), Order, Point, boardHeight, boardWidth, buttonChangeTile, changeTileColorBlue, changeTileColorGreen, changeTileColorRed, changeTileColorYellow, createList, createSelectList, createXYList, drawBaseCube, drawBoard, drawColumn, drawColumnList, drawObjects, drawPoints, drawQuarterBoard, drawQuarterObjects, drawRectBlue, drawRectGreen, drawRectRed, drawRectYellow, drawRow, drawRowList, drawStackCube, getPointXList, getPointYList, h, inTileBlue, inTileGreen, inTileRed, inTileYellow, init, leftSide, main, maxSize, offsetX, offsetY, orderCube, outputColumn, outputColumnRev, outputQuarterColumn, outputRow, quarterX, quarterY, rightSide, stackCube, stackCubeList, stackQuarterList, swap, tileHeight, tileWidth, top, update, view, w, zip)
+module Main exposing (Model, Msg(..), Order, Point, boardHeight, boardWidth, buttonMoveTile, createBuilding, createList, createSelectList, createXYList, drawBaseCube, drawBoard, drawColumn, drawColumnList, drawObjects, drawPoints, drawQuarterBoard, drawQuarterObjects, drawRectBlue, drawRectGreen, drawRectRed, drawRectYellow, drawRow, drawRowList, drawStackCube, getPointXList, getPointYList, h, inTileBlue, inTileGreen, inTileRed, inTileYellow, init, leftSide, main, maxSize, offsetX, offsetY, orderCube, outputColumn, outputColumnRev, outputQuarterColumn, outputRow, quarterX, quarterY, rightSide, stackCube, stackCubeList, stackQuarterList, stackTileColorBlue, stackTileColorGreen, stackTileColorRed, stackTileColorYellow, swap, tileHeight, tileWidth, top, update, view, w, zip)
 
 import Array exposing (..)
 import Browser
@@ -102,8 +102,8 @@ update msg model =
 ---- VIEW ----
 
 
-buttonChangeTile : Html Msg
-buttonChangeTile =
+buttonMoveTile : Html Msg
+buttonMoveTile =
     div []
         [ img [ src "/logo.svg" ] []
         , h1 [] [ Html.text "Your Elm App is working!" ]
@@ -173,38 +173,37 @@ orderCube i j =
         countOrderYellow =
             -countYellowFirst + countYellowSecond
     in
-    [ Order -100 <| drawQuarterBoard boardWidth boardHeight 0
+    [ Order -100 <| drawQuarterBoard maxSize maxSize 0
     , Order countOrderRed <|
-        changeTileColorRed countRedFirst countRedSecond 1
-    , Order countOrderRed <|
-        changeTileColorRed countRedFirst countRedSecond 2
-    , Order countOrderRed <|
-        changeTileColorRed countRedFirst countRedSecond 3
-    , Order countOrderBlue <|
-        changeTileColorBlue countBlueFirst countBlueSecond 1
-    , Order countOrderBlue <|
-        changeTileColorBlue countBlueFirst countBlueSecond 2
-    , Order countOrderBlue <|
-        changeTileColorBlue countBlueFirst countBlueSecond 3
-    , Order countOrderBlue <|
-        changeTileColorBlue countBlueFirst countBlueSecond 4
-    , Order countOrderBlue <|
-        changeTileColorBlue countBlueFirst countBlueSecond 5
-    , Order countOrderGreen <|
-        changeTileColorGreen countGreenFirst countGreenSecond 1
-    , Order countOrderGreen <|
-        changeTileColorGreen countGreenFirst countGreenSecond 2
-    , Order countOrderGreen <|
-        changeTileColorGreen countGreenFirst countGreenSecond 3
-    , Order countOrderYellow <|
-        changeTileColorYellow countYellowFirst countYellowSecond 1
-    , Order countOrderYellow <|
-        changeTileColorYellow countYellowFirst countYellowSecond 2
-    , Order countOrderYellow <|
-        changeTileColorYellow countYellowFirst countYellowSecond 3
-    , Order countOrderYellow <|
-        changeTileColorYellow countYellowFirst countYellowSecond 4
+        stackTileColorRed countRedFirst countRedSecond 1
+
+    --    , Order countOrderRed <|
+    --        stackTileColorRed countRedFirst countRedSecond 2
+    --    , Order countOrderRed <|
+    --        stackTileColorRed countRedFirst countRedSecond 3
+    --    , Order countOrderBlue <|
     ]
+
+
+createBuilding : Int -> Int -> List (Html Msg)
+createBuilding i j =
+    case i of
+        0 ->
+            List.foldr (::)
+                [ stackTileColorRed 0 (j - 1) 1 ]
+            <|
+                createBuilding 0 (j - 1)
+
+        _ ->
+            case j of
+                0 ->
+                    []
+
+                _ ->
+                    List.foldr (::)
+                        [ stackTileColorRed (i - 1) (j - 1) 1 ]
+                    <|
+                        createBuilding i (j - 1)
 
 
 drawQuarterObjects : Int -> Int -> Html Msg
@@ -222,7 +221,7 @@ drawQuarterObjects i j =
 view : Model -> Html Msg
 view model =
     div []
-        [ buttonChangeTile
+        [ buttonMoveTile
         , hr [] []
         , drawObjects model.columnCount model.rowCount
         , hr [] []
@@ -602,8 +601,8 @@ drawRectYellow i j =
 -- クォータービューに色付きタイルを置くための関数（赤、黄、緑、青の４色を用意）
 
 
-changeTileColorRed : Int -> Int -> Int -> Html Msg
-changeTileColorRed n i stackNum =
+stackTileColorRed : Int -> Int -> Int -> Html Msg
+stackTileColorRed n i stackNum =
     let
         count =
             List.range 0 i
@@ -621,8 +620,8 @@ changeTileColorRed n i stackNum =
                 inTileRed n i stackNum
 
 
-changeTileColorBlue : Int -> Int -> Int -> Html Msg
-changeTileColorBlue n i stackNum =
+stackTileColorBlue : Int -> Int -> Int -> Html Msg
+stackTileColorBlue n i stackNum =
     let
         count =
             List.range 0 i
@@ -640,8 +639,8 @@ changeTileColorBlue n i stackNum =
                 inTileBlue n i stackNum
 
 
-changeTileColorYellow : Int -> Int -> Int -> Html Msg
-changeTileColorYellow n i stackNum =
+stackTileColorYellow : Int -> Int -> Int -> Html Msg
+stackTileColorYellow n i stackNum =
     let
         count =
             List.range 0 i
@@ -659,8 +658,8 @@ changeTileColorYellow n i stackNum =
                 inTileYellow n i stackNum
 
 
-changeTileColorGreen : Int -> Int -> Int -> Html Msg
-changeTileColorGreen n i stackNum =
+stackTileColorGreen : Int -> Int -> Int -> Html Msg
+stackTileColorGreen n i stackNum =
     let
         count =
             List.range 0 i
@@ -954,7 +953,12 @@ drawBaseCube : Int -> Int -> Int -> List (Svg msg)
 drawBaseCube i j stackNum =
     case i of
         0 ->
-            []
+            List.foldr (::)
+                (stackCubeList 0 (j - 1) stackNum
+                    |> List.reverse
+                )
+            <|
+                drawBaseCube 0 (j - 1) stackNum
 
         _ ->
             case j of
@@ -972,8 +976,13 @@ drawBaseCube i j stackNum =
 
 drawQuarterBoard : Int -> Int -> Int -> Html Msg
 drawQuarterBoard i j stackNum =
-    svg [ SvgAt.width (px 1000), SvgAt.height (px 1000), viewBox 0 0 1000 1000 ] <|
-        List.foldr (::) [] (drawBaseCube (i - 1) (j - 1) stackNum)
+    case ( i, j ) of
+        ( 0, 0 ) ->
+            svg [] []
+
+        _ ->
+            svg [ SvgAt.width (px 1000), SvgAt.height (px 1000), viewBox 0 0 1000 1000 ] <|
+                List.foldr (::) [] (drawBaseCube (i - 1) (j - 1) stackNum)
 
 
 
