@@ -1,4 +1,4 @@
-module Main exposing (Model, Msg(..), buttonMoveTile, drawObjects, drawQuarterBoard, drawQuarterObjects, init, main, update, view)
+module Main exposing (Model, Msg(..), Order, Point, boardHeight, boardWidth, buttonMoveTile, createList, createSelectList, createXYList, drawBaseCube, drawBoard, drawColumn, drawColumnList, drawObjects, drawPoints, drawQuarterBoard, drawQuarterObjects, drawRectBlue, drawRectGreen, drawRectRed, drawRectYellow, drawRow, drawRowList, drawStackCube, getPointXList, getPointYList, h, inTileBlue, inTileGreen, inTileRed, inTileYellow, init, leftSide, main, maxElement, offsetX, offsetY, orderCube, outputColumn, outputColumnRev, outputQuarterColumn, outputRow, quarterX, quarterY, rightSide, stackCube, stackCubeList, stackQuarterList, stackTileColorBlue, stackTileColorGreen, stackTileColorRed, stackTileColorYellow, swap, tileHeight, tileWidth, top, update, view, w, zip)
 
 import Array exposing (..)
 import Browser
@@ -18,22 +18,22 @@ import TypedSvg.Types exposing (..)
 
 
 ---- グローバル変数 ------
-{- maxSizeは原点を含む要素の最大数 -}
+{- maxElementは原点を含む要素の最大数 -}
 
 
-maxSize : Int
-maxSize =
+maxElement : Int
+maxElement =
     8
 
 
 boardWidth : Int
 boardWidth =
-    maxSize
+    maxElement
 
 
 boardHeight : Int
 boardHeight =
-    maxSize
+    maxElement
 
 
 
@@ -120,11 +120,11 @@ drawObjects i j =
         , SvgAt.height <| px <| 300
         , viewBox 0 0 300 300
         ]
-        [ drawBoard maxSize
-        , drawRectRed (modBy (maxSize - 2) i) (modBy (maxSize - 1) j)
-        , drawRectBlue (modBy (maxSize - 2) (i + 1)) (modBy (maxSize - 1) (j + 1))
-        , drawRectGreen (modBy (maxSize - 2) (i + 2)) (modBy (maxSize - 1) (j + 2))
-        , drawRectYellow (modBy (maxSize - 2) (i + 3)) (modBy (maxSize - 1) (j + 3))
+        [ drawBoard maxElement
+        , drawRectRed (modBy (maxElement - 2) i) (modBy (maxElement - 1) j)
+        , drawRectBlue (modBy (maxElement - 2) (i + 1)) (modBy (maxElement - 1) (j + 1))
+        , drawRectGreen (modBy (maxElement - 2) (i + 2)) (modBy (maxElement - 1) (j + 2))
+        , drawRectYellow (modBy (maxElement - 2) (i + 3)) (modBy (maxElement - 1) (j + 3))
         ]
 
 
@@ -295,7 +295,7 @@ createList i j =
 
 
 
-{- リストをSelectList化（maxSizeは原点を含む要素の最大数） -}
+{- リストをSelectList化（maxElementは原点を含む要素の最大数） -}
 
 
 createSelectList : Int -> SelectList.SelectList (Point String)
@@ -303,7 +303,7 @@ createSelectList n =
     SelectList.fromLists []
         (Point 0 0 (Array.fromList [ "nothing" ]))
         -- 所望の順序と逆で出力されてしまうため反転させる
-        (createList n (maxSize - 1) |> List.reverse)
+        (createList n (maxElement - 1) |> List.reverse)
         -- 空要素を削除(うまいこと作ればこれは必要なし)
         |> SelectList.attempt SelectList.delete
 
@@ -341,14 +341,14 @@ outputColumnRev columnNum orderNum =
     -- columnNum : 出力したい要素の数   orderNum : 列の何番目に線を描くか指定
     let
         head =
-            getPointYList maxSize |> SelectList.selectHead
+            getPointYList maxElement |> SelectList.selectHead
     in
     if columnNum == (head |> SelectList.index) then
         []
 
     else
         ( orderNum
-        , getPointYList maxSize
+        , getPointYList maxElement
             |> SelectList.attempt (SelectList.selectBy (columnNum - 1))
             |> SelectList.selected
         )
@@ -373,7 +373,7 @@ drawColumn i =
     polyline
         [ SvgAt.fill FillNone
         , stroke Color.black
-        , points <| outputColumn (maxSize + 1) (i * tileWidth |> toFloat)
+        , points <| outputColumn (maxElement + 1) (i * tileWidth |> toFloat)
         ]
         []
 
@@ -407,7 +407,7 @@ drawRow i =
     polyline
         [ SvgAt.fill FillNone
         , stroke Color.black
-        , points <| outputRow maxSize (i * tileHeight |> toFloat)
+        , points <| outputRow maxElement (i * tileHeight |> toFloat)
         ]
         []
 
@@ -429,7 +429,7 @@ drawRowList i =
 drawBoard : Int -> Svg msg
 drawBoard i =
     svg [ SvgAt.width (px 300), SvgAt.height (px 300), viewBox 0 0 300 300 ] <|
-        List.foldr (::) (drawRowList maxSize) (drawColumnList maxSize)
+        List.foldr (::) (drawRowList maxElement) (drawColumnList maxElement)
 
 
 
@@ -952,7 +952,7 @@ drawStackCube i stackNum =
 
         _ ->
             List.foldr (::)
-                (stackCubeList (maxSize - 2) i stackNum
+                (stackCubeList (maxElement - 2) i stackNum
                     |> List.reverse
                 )
             <|
