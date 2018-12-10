@@ -4,8 +4,7 @@
 アイデア
 -----------------
 * マップに高低差概念を取り入れる
-
-https://ellie-app.com/47sjFxsgNRZa1
+https://ellie-app.com/47txbvQpxf2a1
 
 参考情報
 -----------------
