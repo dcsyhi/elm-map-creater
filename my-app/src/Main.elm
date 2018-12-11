@@ -1,4 +1,4 @@
-module Main exposing (Model, Msg(..), Order, Point, boardHeight, boardWidth, buttonMoveTile, createList, createSelectList, createXYList, drawBaseCube, drawBoard, drawColumn, drawColumnList, drawObjects, drawPoints, drawQuarterBoard, drawQuarterObjects, drawRectBlue, drawRectGreen, drawRectRed, drawRectYellow, drawRow, drawRowList, drawStackCube, getPointXList, getPointYList, h, inTileBlue, inTileGreen, inTileRed, inTileYellow, init, leftSide, main, maxElement, offsetX, offsetY, orderCube, outputColumn, outputColumnRev, outputQuarterColumn, outputRow, quarterX, quarterY, rightSide, stackCube, stackCubeList, stackQuarterList, stackTileColorBlue, stackTileColorGreen, stackTileColorRed, stackTileColorYellow, swap, tileHeight, tileWidth, top, update, view, w, zip)
+module Main exposing (Model, Msg(..), Order, Point, arrangeStackCubes, boardHeight, boardWidth, buttonMoveTile, createCube, createCubeList, createList, createSelectList, createXYList, drawBaseCube, drawBoard, drawColumn, drawColumnList, drawObjects, drawPoints, drawQuarterBoard, drawQuarterObjects, drawRectBlue, drawRectGreen, drawRectRed, drawRectYellow, drawRow, drawRowList, drawStackCube, getPointXList, getPointYList, h, inTileBlue, inTileGreen, inTileRed, inTileYellow, init, leftSide, main, maxElement, offsetX, offsetY, orderCube, outputColumn, outputColumnRev, outputQuarterColumn, outputRow, quarterX, quarterY, rightSide, stackCubes, stackQuarterList, stackTileColorBlue, stackTileColorGreen, stackTileColorRed, stackTileColorYellow, swap, tileHeight, tileWidth, top, update, view, w, zip)
 
 import Array exposing (..)
 import Browser
@@ -23,12 +23,12 @@ import TypedSvg.Types exposing (..)
 
 maxElement : Int
 maxElement =
-    8
+    7
 
 
 boardWidth : Int
 boardWidth =
-    maxElement
+    7
 
 
 boardHeight : Int
@@ -121,10 +121,10 @@ drawObjects i j =
         , viewBox 0 0 300 300
         ]
         [ drawBoard maxElement
-        , drawRectRed (modBy (maxElement - 2) i) (modBy (maxElement - 1) j)
-        , drawRectBlue (modBy (maxElement - 2) (i + 1)) (modBy (maxElement - 1) (j + 1))
-        , drawRectGreen (modBy (maxElement - 2) (i + 2)) (modBy (maxElement - 1) (j + 2))
-        , drawRectYellow (modBy (maxElement - 2) (i + 3)) (modBy (maxElement - 1) (j + 3))
+        , drawRectRed (modBy (maxElement - 1) i) (modBy (maxElement - 1) j)
+        , drawRectBlue (modBy (maxElement - 1) (i + 1)) (modBy (maxElement - 1) (j + 1))
+        , drawRectGreen (modBy (maxElement - 1) (i + 2)) (modBy (maxElement - 1) (j + 2))
+        , drawRectYellow (modBy (maxElement - 1) (i + 3)) (modBy (maxElement - 1) (j + 3))
         ]
 
 
@@ -138,19 +138,19 @@ orderCube : Int -> Int -> List Order
 orderCube i j =
     let
         countRedFirst =
-            modBy (boardWidth - 2) (i + 0)
+            modBy (boardWidth - 1) i
 
         countBlueFirst =
-            modBy (boardWidth - 2) (i + 1)
+            modBy (boardWidth - 1) (i + 1)
 
         countGreenFirst =
-            modBy (boardWidth - 2) (i + 2)
+            modBy (boardWidth - 1) (i + 2)
 
         countYellowFirst =
-            modBy (boardWidth - 2) (i + 3)
+            modBy (boardWidth - 1) (i + 3)
 
         countRedSecond =
-            modBy (boardHeight - 1) (j + 0)
+            modBy (boardHeight - 1) j
 
         countBlueSecond =
             modBy (boardHeight - 1) (j + 1)
@@ -159,7 +159,7 @@ orderCube i j =
             modBy (boardHeight - 1) (j + 2)
 
         countYellowSecond =
-            modBy (boardHeight - 1) (j + 3)
+            modBy (boardHeight - 1) (i + 3)
 
         countOrderRed =
             -countRedFirst + countRedSecond
@@ -173,63 +173,49 @@ orderCube i j =
         countOrderYellow =
             -countYellowFirst + countYellowSecond
     in
-    [ Order -100 <| drawQuarterBoard boardWidth boardHeight 0
-    , Order countOrderRed <|
-        stackTileColorRed countRedFirst countRedSecond 1
-    , Order countOrderRed <|
-        stackTileColorRed countRedFirst countRedSecond 2
-    , Order countOrderRed <|
-        stackTileColorRed countRedFirst countRedSecond 3
-    , Order countOrderRed <|
-        stackTileColorRed countRedFirst countRedSecond 4
-    , Order countOrderRed <|
-        stackTileColorRed countRedFirst countRedSecond 5
-    , Order countOrderBlue <|
-        stackTileColorBlue countBlueFirst countBlueSecond 1
-    , Order countOrderBlue <|
-        stackTileColorBlue countBlueFirst countBlueSecond 2
-    , Order countOrderBlue <|
-        stackTileColorBlue countBlueFirst countBlueSecond 3
-    , Order countOrderBlue <|
-        stackTileColorBlue countBlueFirst countBlueSecond 4
-    , Order countOrderBlue <|
-        stackTileColorBlue countBlueFirst countBlueSecond 5
-    , Order countOrderGreen <|
-        stackTileColorGreen countGreenFirst countGreenSecond 1
-    , Order countOrderGreen <|
-        stackTileColorGreen countGreenFirst countGreenSecond 2
-    , Order countOrderGreen <|
-        stackTileColorGreen countGreenFirst countGreenSecond 3
-    , Order countOrderYellow <|
-        stackTileColorYellow countYellowFirst countYellowSecond 1
-    , Order countOrderYellow <|
-        stackTileColorYellow countYellowFirst countYellowSecond 2
-    , Order countOrderYellow <|
-        stackTileColorYellow countYellowFirst countYellowSecond 3
-    , Order countOrderYellow <|
-        stackTileColorYellow countYellowFirst countYellowSecond 4
-    ]
+    List.foldr (::) arrangeStackCubes <|
+        [ Order -100 <| drawQuarterBoard boardWidth boardHeight 0 ]
 
 
 
-{- 開発中
-   createBuilding : Int -> Int -> List Order
-   createBuilding i j =
-       case i of
-          0 ->
-                List.foldr (::)
-                   ( Order j <| stackTileColorRed 0 (j-1) 1)
-                      <|
-                         createBuilding 0 (j-1)
-          _ ->
-             case j of
-                  0 ->
-                      []
-                  _ ->
-                     List.foldr (::)
-                          ( Order (i + j) stackTileColorRed (i-1)(j-1) 1) <| (createBuilding i (j-1))
+--      [ Order countOrderRed <|
+--        stackTileColorRed countRedFirst countRedSecond 1
+--      , Order countOrderRed <|
+--        stackTileColorRed countRedFirst countRedSecond 2
 
--}
+
+arrangeStackCubes =
+    List.concat <|
+        [ stackCubes 3 3 5 1
+        , stackCubes 4 4 4 1
+        , stackCubes 2 4 4 1
+        , stackCubes 6 3 5 2
+        , stackCubes 7 4 4 2
+        , stackCubes 5 4 4 2
+        ]
+
+
+stackCubes : Int -> Int -> Int -> Int -> List Order
+stackCubes xindex start end stackNum =
+    case xindex of
+        0 ->
+            [ Order end <| stackTileColorRed 0 end stackNum ]
+
+        _ ->
+            case end of
+                0 ->
+                    []
+
+                _ ->
+                    if end >= start then
+                        List.foldr (::)
+                            [ Order (-xindex + end) <|
+                                stackTileColorRed (xindex - 1) end stackNum
+                            ]
+                            (stackCubes xindex start (end - 1) stackNum)
+
+                    else
+                        []
 
 
 drawQuarterObjects : Int -> Int -> Html Msg
@@ -246,13 +232,17 @@ drawQuarterObjects i j =
 
 view : Model -> Html Msg
 view model =
-    div []
-        [ buttonMoveTile
-        , hr [] []
-        , drawObjects model.columnCount model.rowCount
-        , hr [] []
-        , drawQuarterObjects model.columnCount model.rowCount
-        ]
+    if maxElement <= 5 then
+        div [] [ h1 [] [ Html.text "maxElement number is too small. Please input more big number." ] ]
+
+    else
+        div []
+            [ buttonMoveTile
+            , hr [] []
+            , drawObjects model.columnCount model.rowCount
+            , hr [] []
+            , drawQuarterObjects model.columnCount model.rowCount
+            ]
 
 
 
@@ -303,7 +293,7 @@ createSelectList n =
     SelectList.fromLists []
         (Point 0 0 (Array.fromList [ "nothing" ]))
         -- 所望の順序と逆で出力されてしまうため反転させる
-        (createList n (maxElement - 1) |> List.reverse)
+        (createList n maxElement |> List.reverse)
         -- 空要素を削除(うまいこと作ればこれは必要なし)
         |> SelectList.attempt SelectList.delete
 
@@ -349,7 +339,7 @@ outputColumnRev columnNum orderNum =
     else
         ( orderNum
         , getPointYList maxElement
-            |> SelectList.attempt (SelectList.selectBy (columnNum - 1))
+            |> SelectList.attempt (SelectList.selectBy columnNum)
             |> SelectList.selected
         )
             :: outputColumnRev (columnNum - 1) orderNum
@@ -407,7 +397,7 @@ drawRow i =
     polyline
         [ SvgAt.fill FillNone
         , stroke Color.black
-        , points <| outputRow maxElement (i * tileHeight |> toFloat)
+        , points <| outputRow (maxElement + 1) (i * tileHeight |> toFloat)
         ]
         []
 
@@ -474,11 +464,11 @@ outputQuarterColumn n =
 
 
 
-{- stackCube:高さ方向にタイルチップを積み上げるための関数 -}
+{- createCube:高さ方向にタイルチップを積み上げるための関数 -}
 
 
-stackCube : Int -> Int -> Int -> List (Svg msg)
-stackCube n i stackNum =
+createCube : Int -> Int -> Int -> List (Svg msg)
+createCube n i stackNum =
     let
         count =
             stackQuarterList n stackNum
@@ -533,17 +523,17 @@ stackCube n i stackNum =
 
 
 
-{- 再帰を使ってstackCubeをリスト化 -}
+{- 再帰を使ってcreateCubeをリスト化 -}
 
 
-stackCubeList : Int -> Int -> Int -> List (Svg msg)
-stackCubeList n i stackNum =
+createCubeList : Int -> Int -> Int -> List (Svg msg)
+createCubeList n i stackNum =
     case n of
         0 ->
             []
 
         _ ->
-            List.foldr (::) (stackCube (n - 2) i stackNum) (stackCubeList (n - 1) i stackNum)
+            List.foldr (::) (createCube (n - 1) i stackNum) (createCubeList (n - 1) i stackNum)
 
 
 
@@ -629,9 +619,18 @@ drawRectYellow i j =
 
 stackTileColorRed : Int -> Int -> Int -> Html Msg
 stackTileColorRed n i stackNum =
-    case i of
+    let
+        count =
+            List.range 0 i
+                |> SelectList.fromList
+                |> Maybe.withDefault (SelectList.singleton 0)
+                |> SelectList.selectWhileLoopBy i
+                |> SelectList.selected
+    in
+    case count of
         0 ->
-            svg [] []
+            svg [ SvgAt.width (px 1000), SvgAt.height (px 1000), viewBox 0 0 1000 1000 ] <|
+                inTileRed n (boardHeight - 1) stackNum
 
         _ ->
             svg [ SvgAt.width (px 1000), SvgAt.height (px 1000), viewBox 0 0 1000 1000 ] <|
@@ -640,9 +639,18 @@ stackTileColorRed n i stackNum =
 
 stackTileColorBlue : Int -> Int -> Int -> Html Msg
 stackTileColorBlue n i stackNum =
-    case i of
+    let
+        count =
+            List.range 0 i
+                |> SelectList.fromList
+                |> Maybe.withDefault (SelectList.singleton 0)
+                |> SelectList.selectWhileLoopBy i
+                |> SelectList.selected
+    in
+    case count of
         0 ->
-            svg [] []
+            svg [ SvgAt.width (px 1000), SvgAt.height (px 1000), viewBox 0 0 1000 1000 ] <|
+                inTileRed n (boardHeight - 1) stackNum
 
         _ ->
             svg [ SvgAt.width (px 1000), SvgAt.height (px 1000), viewBox 0 0 1000 1000 ] <|
@@ -661,7 +669,8 @@ stackTileColorYellow n i stackNum =
     in
     case count of
         0 ->
-            svg [] []
+            svg [ SvgAt.width (px 1000), SvgAt.height (px 1000), viewBox 0 0 1000 1000 ] <|
+                inTileRed n (boardHeight - 1) stackNum
 
         _ ->
             svg [ SvgAt.width (px 1000), SvgAt.height (px 1000), viewBox 0 0 1000 1000 ] <|
@@ -695,18 +704,18 @@ inTileRed : Int -> Int -> Int -> List (Svg msg)
 inTileRed n i stackNum =
     let
         count =
-            stackQuarterList (n - 1) stackNum
+            stackQuarterList n stackNum
                 |> SelectList.selectWhileLoopBy i
                 |> SelectList.index
 
         x =
-            stackQuarterList (n - 1) stackNum
+            stackQuarterList n stackNum
                 |> SelectList.selectWhileLoopBy i
                 |> SelectList.selected
                 |> Tuple.first
 
         y =
-            stackQuarterList (n - 1) stackNum
+            stackQuarterList n stackNum
                 |> SelectList.selectWhileLoopBy i
                 |> SelectList.selected
                 |> Tuple.second
@@ -756,18 +765,18 @@ inTileBlue : Int -> Int -> Int -> List (Svg msg)
 inTileBlue n i stackNum =
     let
         count =
-            stackQuarterList (n - 1) stackNum
+            stackQuarterList n stackNum
                 |> SelectList.selectWhileLoopBy i
                 |> SelectList.index
 
         x =
-            stackQuarterList (n - 1) stackNum
+            stackQuarterList n stackNum
                 |> SelectList.selectWhileLoopBy i
                 |> SelectList.selected
                 |> Tuple.first
 
         y =
-            stackQuarterList (n - 1) stackNum
+            stackQuarterList n stackNum
                 |> SelectList.selectWhileLoopBy i
                 |> SelectList.selected
                 |> Tuple.second
@@ -817,18 +826,18 @@ inTileYellow : Int -> Int -> Int -> List (Svg msg)
 inTileYellow n i stackNum =
     let
         count =
-            stackQuarterList (n - 1) stackNum
+            stackQuarterList n stackNum
                 |> SelectList.selectWhileLoopBy i
                 |> SelectList.index
 
         x =
-            stackQuarterList (n - 1) stackNum
+            stackQuarterList n stackNum
                 |> SelectList.selectWhileLoopBy i
                 |> SelectList.selected
                 |> Tuple.first
 
         y =
-            stackQuarterList (n - 1) stackNum
+            stackQuarterList n stackNum
                 |> SelectList.selectWhileLoopBy i
                 |> SelectList.selected
                 |> Tuple.second
@@ -878,18 +887,18 @@ inTileGreen : Int -> Int -> Int -> List (Svg msg)
 inTileGreen n i stackNum =
     let
         count =
-            stackQuarterList (n - 1) stackNum
+            stackQuarterList n stackNum
                 |> SelectList.selectWhileLoopBy i
                 |> SelectList.index
 
         x =
-            stackQuarterList (n - 1) stackNum
+            stackQuarterList n stackNum
                 |> SelectList.selectWhileLoopBy i
                 |> SelectList.selected
                 |> Tuple.first
 
         y =
-            stackQuarterList (n - 1) stackNum
+            stackQuarterList n stackNum
                 |> SelectList.selectWhileLoopBy i
                 |> SelectList.selected
                 |> Tuple.second
@@ -952,7 +961,7 @@ drawStackCube i stackNum =
 
         _ ->
             List.foldr (::)
-                (stackCubeList (maxElement - 2) i stackNum
+                (createCubeList maxElement i stackNum
                     |> List.reverse
                 )
             <|
@@ -964,7 +973,7 @@ drawBaseCube i j stackNum =
     case i of
         0 ->
             List.foldr (::)
-                (stackCubeList 0 (j - 1) stackNum
+                (createCubeList 0 j stackNum
                     |> List.reverse
                 )
             <|
@@ -977,7 +986,7 @@ drawBaseCube i j stackNum =
 
                 _ ->
                     List.foldr (::)
-                        (stackCubeList (i - 1) (j - 1) stackNum
+                        (createCubeList (i - 1) (j - 1) stackNum
                             |> List.reverse
                         )
                     <|
@@ -992,7 +1001,7 @@ drawQuarterBoard i j stackNum =
 
         _ ->
             svg [ SvgAt.width (px 1000), SvgAt.height (px 1000), viewBox 0 0 1000 1000 ] <|
-                List.foldr (::) [] (drawBaseCube (i - 1) (j - 1) stackNum)
+                List.foldr (::) [] (drawBaseCube i j stackNum)
 
 
 
