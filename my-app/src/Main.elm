@@ -1,4 +1,4 @@
-module Main exposing (Model, Msg(..), Order, Point, boardHeight, boardWidth, buttonMoveTile, createBuilding, createList, createSelectList, createXYList, drawBaseCube, drawBoard, drawColumn, drawColumnList, drawObjects, drawPoints, drawQuarterBoard, drawQuarterObjects, drawRectBlue, drawRectGreen, drawRectRed, drawRectYellow, drawRow, drawRowList, drawStackCube, getPointXList, getPointYList, h, inTileBlue, inTileGreen, inTileRed, inTileYellow, init, leftSide, main, maxSize, offsetX, offsetY, orderCube, outputColumn, outputColumnRev, outputQuarterColumn, outputRow, quarterX, quarterY, rightSide, stackCube, stackCubeList, stackQuarterList, stackTileColorBlue, stackTileColorGreen, stackTileColorRed, stackTileColorYellow, swap, tileHeight, tileWidth, top, update, view, w, zip)
+module Main exposing (Model, Msg(..), Order, Point, arrangeStackTiles_1, arrangeStackTiles_10, arrangeStackTiles_11, arrangeStackTiles_12, arrangeStackTiles_13, arrangeStackTiles_14, arrangeStackTiles_15, arrangeStackTiles_16, arrangeStackTiles_17, arrangeStackTiles_18, arrangeStackTiles_19, arrangeStackTiles_2, arrangeStackTiles_20, arrangeStackTiles_21, arrangeStackTiles_3, arrangeStackTiles_4, arrangeStackTiles_5, arrangeStackTiles_6, arrangeStackTiles_7, arrangeStackTiles_8, arrangeStackTiles_9, boardHeight, boardWidth, buttonMoveTile, createCube, createCubeList, createList, createSelectList, createXYList, drawBaseCube, drawBoard, drawColumn, drawColumnList, drawObjects, drawPoints, drawQuarterBoard, drawQuarterObjects, drawRectBlue, drawRectGreen, drawRectRed, drawRectYellow, drawRow, drawRowList, drawStackCube, getPointXList, getPointYList, h, init, innerTileBlue, innerTileBuilding, innerTileDoor, innerTileGreen, innerTileLand, innerTileRed, innerTileYellow, leftSide, main, maxElement, offsetX, offsetY, orderCube, outputColumn, outputColumnRev, outputQuarterColumn, outputRow, quarterX, quarterY, rightSide, stackBuildings, stackDoors, stackQuarterList, stackTileBlue, stackTileBuilding, stackTileDoor, stackTileGreen, stackTileLand, stackTileRed, stackTileYellow, stackTiles, swap, tileHeight, tileWidth, top, townOfBarumamussa, update, view, w, zip)
 
 import Array exposing (..)
 import Browser
@@ -18,22 +18,22 @@ import TypedSvg.Types exposing (..)
 
 
 ---- グローバル変数 ------
-{- maxSizeは原点を含む要素の最大数 -}
+{- maxElementは原点を含む要素の最大数 -}
 
 
-maxSize : Int
-maxSize =
-    8
+maxElement : Int
+maxElement =
+    17
 
 
 boardWidth : Int
 boardWidth =
-    maxSize
+    22
 
 
 boardHeight : Int
 boardHeight =
-    maxSize
+    maxElement
 
 
 
@@ -120,11 +120,11 @@ drawObjects i j =
         , SvgAt.height <| px <| 300
         , viewBox 0 0 300 300
         ]
-        [ drawBoard maxSize
-        , drawRectRed (modBy (maxSize - 2) i) (modBy (maxSize - 2) j)
-        , drawRectBlue (modBy (maxSize - 2) (i + 1)) (modBy (maxSize - 2) (j + 1))
-        , drawRectGreen (modBy (maxSize - 2) (i + 2)) (modBy (maxSize - 2) (j + 2))
-        , drawRectYellow (modBy (maxSize - 2) (i + 3)) (modBy (maxSize - 2) (j + 3))
+        [ drawBoard maxElement
+        , drawRectRed (modBy (maxElement - 1) i) (modBy (maxElement - 1) j)
+        , drawRectBlue (modBy (maxElement - 1) (i + 1)) (modBy (maxElement - 1) (j + 1))
+        , drawRectGreen (modBy (maxElement - 1) (i + 2)) (modBy (maxElement - 1) (j + 2))
+        , drawRectYellow (modBy (maxElement - 1) (i + 3)) (modBy (maxElement - 1) (j + 3))
         ]
 
 
@@ -138,28 +138,28 @@ orderCube : Int -> Int -> List Order
 orderCube i j =
     let
         countRedFirst =
-            modBy (boardWidth - 2) (i + 0)
+            modBy (boardWidth - 1) i
 
         countBlueFirst =
-            modBy (boardWidth - 2) (i + 1)
+            modBy (boardWidth - 1) (i + 1)
 
         countGreenFirst =
-            modBy (boardWidth - 2) (i + 2)
+            modBy (boardWidth - 1) (i + 2)
 
         countYellowFirst =
-            modBy (boardWidth - 2) (i + 3)
+            modBy (boardWidth - 1) (i + 3)
 
         countRedSecond =
-            modBy (boardHeight - 2) (j + 0)
+            modBy (boardHeight - 1) j
 
         countBlueSecond =
-            modBy (boardHeight - 2) (j + 1)
+            modBy (boardHeight - 1) (j + 1)
 
         countGreenSecond =
-            modBy (boardHeight - 2) (j + 2)
+            modBy (boardHeight - 1) (j + 2)
 
         countYellowSecond =
-            modBy (boardHeight - 2) (j + 3)
+            modBy (boardHeight - 1) (i + 3)
 
         countOrderRed =
             -countRedFirst + countRedSecond
@@ -173,37 +173,928 @@ orderCube i j =
         countOrderYellow =
             -countYellowFirst + countYellowSecond
     in
-    [ Order -100 <| drawQuarterBoard maxSize maxSize 0
-    , Order countOrderRed <|
-        stackTileColorRed countRedFirst countRedSecond 1
-
-    --    , Order countOrderRed <|
-    --        stackTileColorRed countRedFirst countRedSecond 2
-    --    , Order countOrderRed <|
-    --        stackTileColorRed countRedFirst countRedSecond 3
-    --    , Order countOrderBlue <|
-    ]
+    List.foldr (::) townOfBarumamussa <|
+        [ Order -100 <| drawQuarterBoard boardWidth boardHeight 0 ]
 
 
-createBuilding : Int -> Int -> List (Html Msg)
-createBuilding i j =
-    case i of
+townOfBarumamussa : List Order
+townOfBarumamussa =
+    List.concat <|
+        [ arrangeStackTiles_1
+        , arrangeStackTiles_2
+        , arrangeStackTiles_3
+        , arrangeStackTiles_4
+        , arrangeStackTiles_5
+        , arrangeStackTiles_6
+        , arrangeStackTiles_7
+        , arrangeStackTiles_8
+        , arrangeStackTiles_9
+        , arrangeStackTiles_10
+        , arrangeStackTiles_11
+        , arrangeStackTiles_12
+        , arrangeStackTiles_13
+        , arrangeStackTiles_14
+        , arrangeStackTiles_15
+        , arrangeStackTiles_16
+        , arrangeStackTiles_17
+        , arrangeStackTiles_18
+        , arrangeStackTiles_19
+        , arrangeStackTiles_20
+        , arrangeStackTiles_21
+        ]
+
+
+arrangeStackTiles_1 : List Order
+arrangeStackTiles_1 =
+    -- stackTiles 列名 始点 終点 高さ
+    List.concat <|
+        [ stackTiles 1 1 13 1
+        , stackTiles 1 1 6 2
+        , stackTiles 1 1 5 3
+        , stackTiles 1 1 3 4
+        , stackTiles 1 1 3 5
+        , stackTiles 1 1 3 6
+        , stackTiles 1 1 3 6
+        , stackTiles 1 1 2 7
+        ]
+
+
+arrangeStackTiles_2 : List Order
+arrangeStackTiles_2 =
+    -- stackTiles 列名 始点 終点 高さ
+    List.concat <|
+        [ stackTiles 2 1 14 1
+        , stackTiles 2 1 6 2
+        , stackTiles 2 1 12 2
+        , stackTiles 2 1 8 3
+        , stackTiles 2 1 6 4
+        , stackTiles 2 1 5 5
+        , stackTiles 2 1 5 6
+        , stackTiles 2 1 3 7
+        , stackTiles 2 1 1 8
+        , stackTiles 2 1 1 9
+        , stackTiles 2 1 1 10
+        ]
+
+
+arrangeStackTiles_3 : List Order
+arrangeStackTiles_3 =
+    -- stackTiles 列名 始点 終点 高さ
+    List.concat <|
+        [ stackTiles 3 1 16 1
+        , stackTiles 3 1 16 2
+        , stackTiles 3 1 10 3
+        , stackTiles 3 1 8 4
+        , stackTiles 3 1 8 5
+        , stackTiles 3 1 4 6
+        , stackTiles 3 1 4 7
+        , stackTiles 3 1 4 8
+        , stackTiles 3 1 4 9
+        , stackTiles 3 1 1 8
+        , stackTiles 3 1 1 9
+        , stackTiles 3 1 1 10
+        , stackTiles 3 1 1 11
+        , stackTiles 3 1 1 12
+        , stackBuildings 3 5 7 6
+        , stackBuildings 3 5 6 7
+        , stackBuildings 3 5 6 8
+        , stackBuildings 3 5 6 9
+        , stackBuildings 3 5 6 10
+        ]
+
+
+arrangeStackTiles_4 : List Order
+arrangeStackTiles_4 =
+    -- stackCubes 列名 始点 終点 高さ
+    List.concat <|
+        [ stackTiles 4 1 16 1
+        , stackTiles 4 1 16 2
+        , stackTiles 4 1 15 3
+        , stackTiles 4 1 9 4
+        , stackTiles 4 1 9 5
+        , stackTiles 4 1 9 6
+        , stackBuildings 4 5 7 6
+        , stackBuildings 4 5 5 7
+        , stackBuildings 4 5 5 8
+        , stackBuildings 4 5 5 9
+        , stackDoors 4 6 6 7
+        , stackDoors 4 6 6 8
+        , stackDoors 4 6 6 9
+        , stackBuildings 4 5 6 10
+        , stackTiles 4 1 4 9
+        , stackTiles 4 1 3 10
+        , stackTiles 4 1 3 11
+        , stackTiles 4 1 3 12
+        , stackTiles 4 1 3 13
+        ]
+
+
+arrangeStackTiles_5 : List Order
+arrangeStackTiles_5 =
+    -- stackCubes 列名 始点 終点 高さ
+    List.concat <|
+        [ stackTiles 5 1 16 1
+        , stackTiles 5 1 16 2
+        , stackTiles 5 1 15 3
+        , stackTiles 5 1 13 4
+        , stackTiles 5 1 12 5
+        , stackTiles 5 1 11 6
+        , stackTiles 5 1 10 7
+        , stackTiles 5 1 9 8
+        , stackTiles 5 1 8 9
+        , stackTiles 5 1 7 10
+        , stackTiles 5 1 6 11
+        , stackTiles 5 1 5 12
+        , stackTiles 5 1 4 13
+        , stackTiles 5 1 1 14
+        , stackTiles 5 1 1 15
+        ]
+
+
+arrangeStackTiles_6 : List Order
+arrangeStackTiles_6 =
+    -- stackCubes 列名 始点 終点 高さ
+    List.concat <|
+        [ stackTiles 6 1 16 1
+        , stackTiles 6 1 16 2
+        , stackTiles 6 1 15 3
+        , stackTiles 6 1 13 4
+        , stackTiles 6 1 12 5
+        , stackTiles 6 1 11 6
+        , stackTiles 6 1 10 7
+        , stackTiles 6 1 9 8
+        , stackTiles 6 1 8 9
+        , stackTiles 6 1 8 10
+        , stackTiles 6 1 7 11
+        , stackTiles 6 1 5 12
+        , stackTiles 6 1 5 13
+        , stackBuildings 6 1 4 14
+        , stackBuildings 6 1 3 15
+        , stackBuildings 6 1 3 16
+        , stackBuildings 6 1 3 17
+        , stackBuildings 6 1 1 18
+        , stackBuildings 6 3 3 18
+        ]
+
+
+arrangeStackTiles_7 : List Order
+arrangeStackTiles_7 =
+    -- stackCubes 列名 始点 終点 高さ
+    List.concat <|
+        [ stackTiles 7 1 16 1
+        , stackTiles 7 1 16 2
+        , stackTiles 7 1 16 3
+        , stackTiles 7 1 16 4
+        , stackTiles 7 1 15 5
+        , stackTiles 7 1 14 6
+        , stackTiles 7 1 14 7
+        , stackTiles 7 1 13 8
+        , stackTiles 7 1 13 9
+        , stackTiles 7 1 13 10
+        , stackTiles 7 1 13 11
+        , stackTiles 7 1 5 12
+        , stackTiles 7 1 5 13
+        , stackBuildings 7 1 4 14
+        , stackDoors 7 3 3 15
+        , stackDoors 7 3 3 16
+        , stackDoors 7 3 3 17
+        , stackBuildings 7 1 2 15
+        , stackBuildings 7 1 2 16
+        , stackBuildings 7 1 2 17
+        , stackBuildings 7 1 3 18
+        ]
+
+
+arrangeStackTiles_8 : List Order
+arrangeStackTiles_8 =
+    -- stackCubes 列名 始点 終点 高さ
+    List.concat <|
+        [ stackTiles 8 1 16 1
+        , stackTiles 8 1 16 2
+        , stackTiles 8 1 16 3
+        , stackTiles 8 1 16 4
+        , stackTiles 8 1 16 5
+        , stackTiles 8 1 16 6
+        , stackTiles 8 1 15 7
+        , stackTiles 8 1 15 8
+        , stackTiles 8 1 14 9
+        , stackTiles 8 1 14 10
+        , stackTiles 8 1 14 11
+        , stackBuildings 8 11 13 12
+        , stackBuildings 8 11 11 13
+        , stackBuildings 8 11 11 14
+        , stackBuildings 8 11 11 15
+        , stackBuildings 8 11 11 16
+        , stackTiles 8 1 10 12
+        , stackTiles 8 1 5 13
+        , stackTiles 8 8 10 13
+        , stackBuildings 8 1 4 14
+        , stackBuildings 8 1 3 15
+        , stackBuildings 8 1 3 16
+        , stackBuildings 8 1 3 17
+        , stackBuildings 8 1 3 18
+        ]
+
+
+arrangeStackTiles_9 : List Order
+arrangeStackTiles_9 =
+    -- stackCubes 列名 始点 終点 高さ
+    List.concat <|
+        [ stackTiles 9 1 16 1
+        , stackTiles 9 1 16 2
+        , stackTiles 9 1 16 3
+        , stackTiles 9 1 16 4
+        , stackTiles 9 1 16 5
+        , stackTiles 9 1 16 6
+        , stackTiles 9 1 16 7
+        , stackTiles 9 1 15 8
+        , stackTiles 9 1 15 9
+        , stackTiles 9 1 14 10
+        , stackTiles 9 1 14 11
+        , stackTiles 9 1 11 12
+        , stackTiles 9 1 11 13
+        , stackTiles 9 8 11 14
+        , stackTiles 9 5 5 14
+        , stackTiles 9 1 3 14
+        , stackTiles 9 1 1 16
+        , stackTiles 9 1 1 17
+        , stackTiles 9 1 1 18
+        , stackTiles 9 1 1 19
+        , stackBuildings 9 3 4 14
+        , stackBuildings 9 11 11 12
+        , stackBuildings 9 11 11 13
+        , stackBuildings 9 11 11 14
+        , stackBuildings 9 11 11 15
+        , stackBuildings 9 11 11 16
+        , stackBuildings 9 12 12 12
+        , stackBuildings 9 13 13 12
+        , stackBuildings 9 12 12 13
+        , stackBuildings 9 12 12 14
+        , stackBuildings 9 12 12 15
+        , stackBuildings 9 12 12 16
+        , stackBuildings 9 12 12 17
+        , stackBuildings 9 12 12 17
+        , stackDoors 9 13 13 13
+        , stackDoors 9 13 13 14
+        , stackDoors 9 13 13 15
+        , stackBuildings 9 14 14 12
+        , stackBuildings 9 14 14 13
+        , stackBuildings 9 14 14 14
+        , stackBuildings 9 14 14 15
+        , stackBuildings 9 14 14 16
+        , stackBuildings 9 13 13 16
+        ]
+
+
+arrangeStackTiles_10 : List Order
+arrangeStackTiles_10 =
+    -- stackCubes 列名 始点 終点 高さ
+    List.concat <|
+        [ stackTiles 10 1 16 1
+        , stackTiles 10 1 16 2
+        , stackTiles 10 1 16 3
+        , stackTiles 10 1 16 4
+        , stackTiles 10 1 16 5
+        , stackTiles 10 1 16 6
+        , stackTiles 10 1 16 7
+        , stackTiles 10 1 16 8
+        , stackTiles 10 1 16 9
+        , stackTiles 10 1 14 10
+        , stackTiles 10 1 14 11
+        , stackTiles 10 1 11 12
+        , stackTiles 10 1 11 13
+        , stackTiles 10 1 11 14
+        , stackTiles 10 8 11 15
+        , stackTiles 10 1 5 15
+        , stackTiles 10 1 1 16
+        , stackTiles 10 1 1 17
+        , stackTiles 10 1 1 18
+        , stackTiles 10 1 1 19
+        , stackBuildings 10 11 11 16
+        , stackBuildings 10 12 12 12
+        , stackBuildings 10 12 12 13
+        , stackBuildings 10 12 12 14
+        , stackBuildings 10 12 12 15
+        , stackBuildings 10 12 12 16
+        , stackBuildings 10 12 12 17
+        , stackBuildings 10 13 13 16
+        , stackBuildings 10 13 13 17
+        , stackBuildings 10 14 14 12
+        , stackBuildings 10 14 14 13
+        , stackBuildings 10 14 14 14
+        , stackBuildings 10 14 14 15
+        , stackBuildings 10 14 14 16
+        , stackBuildings 10 14 14 17
+        , stackBuildings 10 2 2 16
+        , stackBuildings 10 2 2 17
+        , stackBuildings 10 2 2 18
+        , stackBuildings 10 2 2 19
+        , stackDoors 10 3 3 15
+        , stackDoors 10 3 3 16
+        , stackDoors 10 3 3 17
+        , stackBuildings 10 4 5 16
+        , stackBuildings 10 4 4 17
+        , stackBuildings 10 3 4 18
+        ]
+
+
+arrangeStackTiles_11 : List Order
+arrangeStackTiles_11 =
+    -- stackCubes 列名 始点 終点 高さ
+    List.concat <|
+        [ stackTiles 11 1 16 1
+        , stackTiles 11 1 16 2
+        , stackTiles 11 1 16 3
+        , stackTiles 11 1 16 4
+        , stackTiles 11 1 16 5
+        , stackTiles 11 1 16 6
+        , stackTiles 11 1 16 7
+        , stackTiles 11 1 16 8
+        , stackTiles 11 1 16 9
+        , stackTiles 11 1 16 10
+        , stackTiles 11 1 14 11
+        , stackTiles 11 1 10 12
+        , stackTiles 11 1 10 13
+        , stackTiles 11 1 10 14
+        , stackTiles 11 1 10 15
+        , stackBuildings 11 11 11 12
+        , stackBuildings 11 11 11 13
+        , stackBuildings 11 11 11 14
+        , stackBuildings 11 11 11 15
+        , stackBuildings 11 12 14 12
+        , stackBuildings 11 12 14 13
+        , stackBuildings 11 12 14 14
+        , stackBuildings 11 12 14 15
+        , stackBuildings 11 12 14 16
+        , stackBuildings 11 12 14 17
+        , stackTiles 11 1 1 16
+        , stackTiles 11 1 1 17
+        , stackTiles 11 1 1 18
+        , stackTiles 11 1 1 19
+        , stackTiles 11 5 5 16
+        , stackTiles 11 5 5 17
+        , stackBuildings 11 2 4 16
+        , stackBuildings 11 2 4 17
+        , stackBuildings 11 2 4 18
+        , stackBuildings 11 2 4 19
+        ]
+
+
+arrangeStackTiles_12 : List Order
+arrangeStackTiles_12 =
+    -- stackCubes 列名 始点 終点 高さ
+    List.concat <|
+        [ stackTiles 12 1 16 1
+        , stackTiles 12 1 16 2
+        , stackTiles 12 1 16 3
+        , stackTiles 12 1 16 4
+        , stackTiles 12 1 16 5
+        , stackTiles 12 1 16 6
+        , stackTiles 12 1 16 7
+        , stackTiles 12 1 16 8
+        , stackTiles 12 1 16 9
+        , stackTiles 12 1 16 10
+        , stackTiles 12 1 16 11
+        , stackTiles 12 1 16 12
+        , stackTiles 12 1 16 13
+        , stackTiles 12 1 15 14
+        , stackBuildings 12 16 16 14
+        , stackTiles 12 1 14 15
+        , stackTiles 12 1 14 16
+        , stackTiles 12 1 1 16
+        , stackTiles 12 1 1 17
+        , stackTiles 12 1 1 18
+        , stackTiles 12 1 1 19
+        , stackTiles 12 1 5 17
+        , stackBuildings 12 2 4 18
+        , stackBuildings 12 2 4 19
+        , stackBuildings 12 8 9 17
+        , stackBuildings 12 8 9 18
+        , stackBuildings 12 8 9 19
+        ]
+
+
+arrangeStackTiles_13 : List Order
+arrangeStackTiles_13 =
+    -- stackCubes 列名 始点 終点 高さ
+    List.concat <|
+        [ stackTiles 13 1 16 1
+        , stackTiles 13 1 16 2
+        , stackTiles 13 1 16 3
+        , stackTiles 13 1 16 4
+        , stackTiles 13 1 16 5
+        , stackTiles 13 1 16 6
+        , stackTiles 13 1 16 7
+        , stackTiles 13 1 16 8
+        , stackTiles 13 1 16 9
+        , stackTiles 13 1 16 10
+        , stackTiles 13 1 16 11
+        , stackTiles 13 1 16 12
+        , stackTiles 13 1 16 13
+        , stackTiles 13 1 13 14
+        , stackTiles 13 1 13 15
+        , stackTiles 13 1 13 16
+        , stackBuildings 13 14 14 14
+        , stackBuildings 13 14 14 15
+        , stackBuildings 13 14 14 16
+        , stackBuildings 13 14 14 17
+        , stackDoors 13 15 15 14
+        , stackDoors 13 15 15 15
+        , stackDoors 13 15 15 16
+        , stackDoors 13 15 15 17
+        , stackBuildings 13 16 16 14
+        , stackBuildings 13 16 16 15
+        , stackBuildings 13 16 16 16
+        , stackBuildings 13 16 16 17
+        , stackBuildings 13 14 16 18
+        , stackTiles 13 1 7 17
+        , stackBuildings 13 8 9 17
+        , stackBuildings 13 8 9 18
+        , stackBuildings 13 8 9 19
+        , stackBuildings 13 8 9 20
+        , stackDoors 13 10 10 17
+        , stackDoors 13 10 10 18
+        , stackDoors 13 10 10 19
+        , stackBuildings 13 10 10 20
+        , stackBuildings 13 11 11 17
+        , stackBuildings 13 11 11 18
+        , stackBuildings 13 11 11 19
+        , stackBuildings 13 11 11 20
+        , stackTiles 13 1 5 18
+        , stackTiles 13 1 5 19
+        , stackTiles 13 1 5 20
+        , stackTiles 13 1 1 21
+        , stackTiles 13 1 1 22
+        , stackBuildings 13 2 4 21
+        , stackBuildings 13 2 4 22
+        , stackBuildings 13 2 3 23
+        ]
+
+
+arrangeStackTiles_14 : List Order
+arrangeStackTiles_14 =
+    -- stackCubes 列名 始点 終点 高さ
+    List.concat <|
+        [ stackTiles 14 1 13 1
+        , stackTiles 14 1 13 2
+        , stackTiles 14 1 13 3
+        , stackTiles 14 1 13 4
+        , stackTiles 14 1 13 5
+        , stackTiles 14 1 13 6
+        , stackTiles 14 1 13 7
+        , stackTiles 14 1 13 8
+        , stackTiles 14 1 13 9
+        , stackTiles 14 1 13 10
+        , stackTiles 14 1 13 11
+        , stackTiles 14 1 13 12
+        , stackTiles 14 1 13 13
+        , stackTiles 14 1 13 14
+        , stackTiles 14 1 13 15
+        , stackTiles 14 1 13 16
+        , stackTiles 14 14 16 1
+        , stackTiles 14 14 16 2
+        , stackTiles 14 14 16 3
+        , stackTiles 14 14 16 4
+        , stackTiles 14 14 16 5
+        , stackTiles 14 14 16 6
+        , stackTiles 14 14 16 7
+        , stackTiles 14 14 16 8
+        , stackTiles 14 14 16 9
+        , stackTiles 14 14 16 10
+        , stackTiles 14 14 16 11
+        , stackTiles 14 14 16 12
+        , stackTiles 14 14 16 13
+        ]
+
+
+arrangeStackTiles_15 : List Order
+arrangeStackTiles_15 =
+    -- stackCubes 列名 始点 終点 高さ
+    List.concat <|
+        [ stackTiles 15 16 16 1
+        , stackTiles 15 16 16 2
+        , stackTiles 15 16 16 3
+        , stackTiles 15 16 16 4
+        , stackTiles 15 16 16 5
+        , stackTiles 15 16 16 6
+        , stackTiles 15 16 16 7
+        , stackTiles 15 16 16 8
+        , stackTiles 15 16 16 9
+        ]
+
+
+arrangeStackTiles_16 : List Order
+arrangeStackTiles_16 =
+    -- stackCubes 列名 始点 終点 高さ
+    List.concat <|
+        [ stackTiles 16 16 16 1
+        , stackTiles 16 16 16 2
+        , stackTiles 16 16 16 3
+        , stackTiles 16 16 16 4
+        , stackTiles 16 16 16 5
+        , stackTiles 16 16 16 6
+        , stackTiles 16 16 16 7
+        , stackTiles 16 16 16 8
+        , stackTiles 16 16 16 9
+        , stackTiles 16 16 16 10
+        , stackTiles 16 16 16 11
+        , stackTiles 16 16 16 12
+        , stackTiles 16 16 16 13
+        ]
+
+
+arrangeStackTiles_17 : List Order
+arrangeStackTiles_17 =
+    -- stackCubes 列名 始点 終点 高さ
+    List.concat <|
+        [ stackTiles 17 16 16 1
+        , stackTiles 17 16 16 2
+        , stackTiles 17 16 16 3
+        , stackTiles 17 16 16 4
+        , stackTiles 17 16 16 5
+        , stackTiles 17 16 16 6
+        , stackTiles 17 16 16 7
+        , stackTiles 17 16 16 8
+        , stackTiles 17 16 16 9
+        , stackTiles 17 16 16 10
+        , stackTiles 17 16 16 11
+        , stackTiles 17 16 16 12
+        , stackTiles 17 16 16 13
+        ]
+
+
+arrangeStackTiles_18 : List Order
+arrangeStackTiles_18 =
+    -- stackCubes 列名 始点 終点 高さ
+    List.concat <|
+        [ stackTiles 18 16 16 1
+        , stackTiles 18 16 16 2
+        , stackTiles 18 16 16 3
+        , stackTiles 18 16 16 4
+        , stackTiles 18 16 16 5
+        , stackTiles 18 16 16 6
+        , stackTiles 18 16 16 7
+        , stackTiles 18 16 16 8
+        , stackTiles 18 16 16 9
+        , stackTiles 18 16 16 10
+        , stackTiles 18 16 16 11
+        , stackTiles 18 16 16 12
+        , stackTiles 18 16 16 13
+        ]
+
+
+arrangeStackTiles_19 : List Order
+arrangeStackTiles_19 =
+    -- stackCubes 列名 始点 終点 高さ
+    List.concat <|
+        [ stackTiles 19 16 16 1
+        , stackTiles 19 16 16 2
+        , stackTiles 19 16 16 3
+        , stackTiles 19 16 16 4
+        , stackTiles 19 16 16 5
+        , stackTiles 19 16 16 6
+        , stackTiles 19 16 16 7
+        , stackTiles 19 16 16 8
+        , stackTiles 19 16 16 9
+        , stackTiles 19 16 16 10
+        , stackTiles 19 16 16 11
+        , stackTiles 19 16 16 12
+        , stackTiles 19 16 16 13
+        ]
+
+
+arrangeStackTiles_20 : List Order
+arrangeStackTiles_20 =
+    -- stackCubes 列名 始点 終点 高さ
+    List.concat <|
+        [ stackTiles 20 16 16 1
+        , stackTiles 20 16 16 2
+        , stackTiles 20 16 16 3
+        , stackTiles 20 16 16 4
+        , stackTiles 20 16 16 5
+        , stackTiles 20 16 16 6
+        , stackTiles 20 16 16 7
+        , stackTiles 20 16 16 8
+        , stackTiles 20 16 16 9
+        , stackTiles 20 16 16 10
+        , stackTiles 20 16 16 11
+        , stackTiles 20 16 16 12
+        , stackTiles 20 16 16 13
+        ]
+
+
+arrangeStackTiles_21 : List Order
+arrangeStackTiles_21 =
+    -- stackCubes 列名 始点 終点 高さ
+    List.concat <|
+        [ stackTiles 21 16 16 1
+        , stackTiles 21 16 16 2
+        , stackTiles 21 16 16 3
+        , stackTiles 21 16 16 4
+        , stackTiles 21 16 16 5
+        , stackTiles 21 16 16 6
+        , stackTiles 21 16 16 7
+        , stackTiles 21 16 16 8
+        , stackTiles 21 16 16 9
+        , stackTiles 21 16 16 10
+        , stackTiles 21 16 16 11
+        , stackTiles 21 16 16 12
+        , stackTiles 21 16 16 13
+        ]
+
+
+stackDoors : Int -> Int -> Int -> Int -> List Order
+stackDoors xindex start end stackNum =
+    case xindex of
         0 ->
-            List.foldr (::)
-                [ stackTileColorRed 0 (j - 1) 1 ]
-            <|
-                createBuilding 0 (j - 1)
+            [ Order end <| stackTileDoor 0 end stackNum ]
 
         _ ->
-            case j of
+            case end of
                 0 ->
                     []
 
                 _ ->
-                    List.foldr (::)
-                        [ stackTileColorRed (i - 1) (j - 1) 1 ]
-                    <|
-                        createBuilding i (j - 1)
+                    if end >= start then
+                        List.foldr (::)
+                            [ Order (-xindex + end) <|
+                                stackTileDoor (xindex - 1) end stackNum
+                            ]
+                            (stackDoors xindex start (end - 1) stackNum)
+
+                    else
+                        []
+
+
+stackTileDoor : Int -> Int -> Int -> Html Msg
+stackTileDoor n i stackNum =
+    let
+        count =
+            List.range 0 i
+                |> SelectList.fromList
+                |> Maybe.withDefault (SelectList.singleton 0)
+                |> SelectList.selectWhileLoopBy i
+                |> SelectList.selected
+    in
+    case count of
+        0 ->
+            svg [ SvgAt.width (px 1000), SvgAt.height (px 1000), viewBox 0 0 1000 1000 ] <|
+                innerTileDoor n (boardHeight - 1) stackNum
+
+        _ ->
+            svg [ SvgAt.width (px 1000), SvgAt.height (px 1000), viewBox 0 0 1000 1000 ] <|
+                innerTileDoor n i stackNum
+
+
+innerTileDoor : Int -> Int -> Int -> List (Svg msg)
+innerTileDoor n i stackNum =
+    let
+        count =
+            stackQuarterList n stackNum
+                |> SelectList.selectWhileLoopBy i
+                |> SelectList.index
+
+        x =
+            stackQuarterList n stackNum
+                |> SelectList.selectWhileLoopBy i
+                |> SelectList.selected
+                |> Tuple.first
+
+        y =
+            stackQuarterList n stackNum
+                |> SelectList.selectWhileLoopBy i
+                |> SelectList.selected
+                |> Tuple.second
+    in
+    case count of
+        0 ->
+            []
+
+        _ ->
+            [ polygon
+                [ SvgAt.fill (Fill <| Color.rgb255 121 67 15)
+                , stroke <| Color.rgb255 55 60 56
+                , strokeLinejoin StrokeLinejoinRound
+                , strokeWidth (px 1.0)
+                , strokeOpacity (Opacity <| 1.0)
+                , points <| (leftSide |> List.map (\( c, d ) -> ( c + x, d + y )))
+                ]
+                []
+            , polygon
+                [ SvgAt.fill (Fill <| Color.rgb255 121 67 15)
+                , stroke <| Color.rgb255 55 60 56
+                , strokeLinejoin StrokeLinejoinRound
+                , strokeWidth (px 1.0)
+                , strokeOpacity (Opacity <| 1.0)
+                , points <| (rightSide |> List.map (\( e, f ) -> ( e + x, f + y )))
+                ]
+                []
+            , polygon
+                [ SvgAt.fill (Fill <| Color.rgb255 121 67 15)
+                , stroke <| Color.rgb255 55 60 56
+                , strokeLinejoin StrokeLinejoinRound
+                , strokeWidth (px 1.0)
+                , strokeOpacity (Opacity <| 1.0)
+                , points <| (top |> List.map (\( a, b ) -> ( a + x, b + y )))
+                ]
+                []
+            ]
+
+
+stackTileBuilding : Int -> Int -> Int -> Html Msg
+stackTileBuilding n i stackNum =
+    let
+        count =
+            List.range 0 i
+                |> SelectList.fromList
+                |> Maybe.withDefault (SelectList.singleton 0)
+                |> SelectList.selectWhileLoopBy i
+                |> SelectList.selected
+    in
+    case count of
+        0 ->
+            svg [ SvgAt.width (px 1000), SvgAt.height (px 1000), viewBox 0 0 1000 1000 ] <|
+                innerTileBuilding n (boardHeight - 1) stackNum
+
+        _ ->
+            svg [ SvgAt.width (px 1000), SvgAt.height (px 1000), viewBox 0 0 1000 1000 ] <|
+                innerTileBuilding n i stackNum
+
+
+innerTileBuilding : Int -> Int -> Int -> List (Svg msg)
+innerTileBuilding n i stackNum =
+    let
+        count =
+            stackQuarterList n stackNum
+                |> SelectList.selectWhileLoopBy i
+                |> SelectList.index
+
+        x =
+            stackQuarterList n stackNum
+                |> SelectList.selectWhileLoopBy i
+                |> SelectList.selected
+                |> Tuple.first
+
+        y =
+            stackQuarterList n stackNum
+                |> SelectList.selectWhileLoopBy i
+                |> SelectList.selected
+                |> Tuple.second
+    in
+    case count of
+        0 ->
+            []
+
+        _ ->
+            [ polygon
+                [ SvgAt.fill (Fill <| Color.rgb255 65 70 66)
+                , stroke <| Color.rgb255 65 70 66
+                , strokeLinejoin StrokeLinejoinRound
+                , strokeWidth (px 1.0)
+                , strokeOpacity (Opacity <| 1.0)
+                , points <| (leftSide |> List.map (\( c, d ) -> ( c + x, d + y )))
+                ]
+                []
+            , polygon
+                [ SvgAt.fill (Fill <| Color.rgb255 204 195 161)
+                , stroke <| Color.rgb255 65 70 66
+                , strokeLinejoin StrokeLinejoinRound
+                , strokeWidth (px 1.0)
+                , strokeOpacity (Opacity <| 1.0)
+                , points <| (rightSide |> List.map (\( e, f ) -> ( e + x, f + y )))
+                ]
+                []
+            , polygon
+                [ SvgAt.fill (Fill <| Color.rgb255 204 195 161)
+                , stroke <| Color.rgb255 65 70 66
+                , strokeLinejoin StrokeLinejoinRound
+                , strokeWidth (px 1.0)
+                , strokeOpacity (Opacity <| 1.0)
+                , points <| (top |> List.map (\( a, b ) -> ( a + x, b + y )))
+                ]
+                []
+            ]
+
+
+stackTileLand : Int -> Int -> Int -> Html Msg
+stackTileLand n i stackNum =
+    let
+        count =
+            List.range 0 i
+                |> SelectList.fromList
+                |> Maybe.withDefault (SelectList.singleton 0)
+                |> SelectList.selectWhileLoopBy i
+                |> SelectList.selected
+    in
+    case count of
+        0 ->
+            svg [ SvgAt.width (px 1000), SvgAt.height (px 1000), viewBox 0 0 1000 1000 ] <|
+                innerTileLand n (boardHeight - 1) stackNum
+
+        _ ->
+            svg [ SvgAt.width (px 1000), SvgAt.height (px 1000), viewBox 0 0 1000 1000 ] <|
+                innerTileLand n i stackNum
+
+
+innerTileLand : Int -> Int -> Int -> List (Svg msg)
+innerTileLand n i stackNum =
+    let
+        count =
+            stackQuarterList n stackNum
+                |> SelectList.selectWhileLoopBy i
+                |> SelectList.index
+
+        x =
+            stackQuarterList n stackNum
+                |> SelectList.selectWhileLoopBy i
+                |> SelectList.selected
+                |> Tuple.first
+
+        y =
+            stackQuarterList n stackNum
+                |> SelectList.selectWhileLoopBy i
+                |> SelectList.selected
+                |> Tuple.second
+    in
+    case count of
+        0 ->
+            []
+
+        _ ->
+            [ polygon
+                [ SvgAt.fill (Fill <| Color.rgb255 65 70 66)
+                , stroke <| Color.rgb255 65 70 66
+                , strokeLinejoin StrokeLinejoinRound
+                , strokeWidth (px 1.0)
+                , strokeOpacity (Opacity <| 1.0)
+                , points <| (leftSide |> List.map (\( c, d ) -> ( c + x, d + y )))
+                ]
+                []
+            , polygon
+                [ SvgAt.fill (Fill <| Color.rgb255 165 112 39)
+                , stroke <| Color.rgb255 65 70 66
+                , strokeLinejoin StrokeLinejoinRound
+                , strokeWidth (px 1.0)
+                , strokeOpacity (Opacity <| 1.0)
+                , points <| (rightSide |> List.map (\( e, f ) -> ( e + x, f + y )))
+                ]
+                []
+            , polygon
+                [ SvgAt.fill (Fill <| Color.rgb255 117 148 81)
+                , stroke <| Color.rgb255 65 70 66
+                , strokeLinejoin StrokeLinejoinRound
+                , strokeWidth (px 1.0)
+                , strokeOpacity (Opacity <| 1.0)
+                , points <| (top |> List.map (\( a, b ) -> ( a + x, b + y )))
+                ]
+                []
+            ]
+
+
+stackBuildings : Int -> Int -> Int -> Int -> List Order
+stackBuildings xindex start end stackNum =
+    case xindex of
+        0 ->
+            [ Order end <| stackTileBuilding 0 end stackNum ]
+
+        _ ->
+            case end of
+                0 ->
+                    []
+
+                _ ->
+                    if end >= start then
+                        List.foldr (::)
+                            [ Order (-xindex + end) <|
+                                stackTileBuilding (xindex - 1) end stackNum
+                            ]
+                            (stackBuildings xindex start (end - 1) stackNum)
+
+                    else
+                        []
+
+
+stackTiles : Int -> Int -> Int -> Int -> List Order
+stackTiles xindex start end stackNum =
+    case xindex of
+        0 ->
+            [ Order end <| stackTileLand 0 end stackNum ]
+
+        _ ->
+            case end of
+                0 ->
+                    []
+
+                _ ->
+                    if end >= start then
+                        List.foldr (::)
+                            [ Order (-xindex + end) <|
+                                stackTileLand (xindex - 1) end stackNum
+                            ]
+                            (stackTiles xindex start (end - 1) stackNum)
+
+                    else
+                        []
 
 
 drawQuarterObjects : Int -> Int -> Html Msg
@@ -220,13 +1111,17 @@ drawQuarterObjects i j =
 
 view : Model -> Html Msg
 view model =
-    div []
-        [ buttonMoveTile
-        , hr [] []
-        , drawObjects model.columnCount model.rowCount
-        , hr [] []
-        , drawQuarterObjects model.columnCount model.rowCount
-        ]
+    if maxElement <= 5 then
+        div [] [ h1 [] [ Html.text "maxElement number is too small. Please input more big number." ] ]
+
+    else
+        div []
+            [ buttonMoveTile
+            , hr [] []
+            , drawObjects model.columnCount model.rowCount
+            , hr [] []
+            , drawQuarterObjects model.columnCount model.rowCount
+            ]
 
 
 
@@ -269,7 +1164,7 @@ createList i j =
 
 
 
-{- リストをSelectList化（maxSizeは原点を含む要素の最大数） -}
+{- リストをSelectList化（maxElementは原点を含む要素の最大数） -}
 
 
 createSelectList : Int -> SelectList.SelectList (Point String)
@@ -277,7 +1172,7 @@ createSelectList n =
     SelectList.fromLists []
         (Point 0 0 (Array.fromList [ "nothing" ]))
         -- 所望の順序と逆で出力されてしまうため反転させる
-        (createList n (maxSize - 1) |> List.reverse)
+        (createList n maxElement |> List.reverse)
         -- 空要素を削除(うまいこと作ればこれは必要なし)
         |> SelectList.attempt SelectList.delete
 
@@ -315,15 +1210,15 @@ outputColumnRev columnNum orderNum =
     -- columnNum : 出力したい要素の数   orderNum : 列の何番目に線を描くか指定
     let
         head =
-            getPointYList maxSize |> SelectList.selectHead
+            getPointYList maxElement |> SelectList.selectHead
     in
     if columnNum == (head |> SelectList.index) then
         []
 
     else
         ( orderNum
-        , getPointYList maxSize
-            |> SelectList.attempt (SelectList.selectBy (columnNum - 1))
+        , getPointYList maxElement
+            |> SelectList.attempt (SelectList.selectBy columnNum)
             |> SelectList.selected
         )
             :: outputColumnRev (columnNum - 1) orderNum
@@ -347,7 +1242,7 @@ drawColumn i =
     polyline
         [ SvgAt.fill FillNone
         , stroke Color.black
-        , points <| outputColumn (maxSize + 1) (i * tileWidth |> toFloat)
+        , points <| outputColumn (maxElement + 1) (i * tileWidth |> toFloat)
         ]
         []
 
@@ -381,7 +1276,7 @@ drawRow i =
     polyline
         [ SvgAt.fill FillNone
         , stroke Color.black
-        , points <| outputRow maxSize (i * tileHeight |> toFloat)
+        , points <| outputRow (maxElement + 1) (i * tileHeight |> toFloat)
         ]
         []
 
@@ -403,7 +1298,7 @@ drawRowList i =
 drawBoard : Int -> Svg msg
 drawBoard i =
     svg [ SvgAt.width (px 300), SvgAt.height (px 300), viewBox 0 0 300 300 ] <|
-        List.foldr (::) (drawRowList maxSize) (drawColumnList maxSize)
+        List.foldr (::) (drawRowList maxElement) (drawColumnList maxElement)
 
 
 
@@ -448,11 +1343,11 @@ outputQuarterColumn n =
 
 
 
-{- stackCube:高さ方向にタイルチップを積み上げるための関数 -}
+{- createCube:高さ方向にタイルチップを積み上げるための関数 -}
 
 
-stackCube : Int -> Int -> Int -> List (Svg msg)
-stackCube n i stackNum =
+createCube : Int -> Int -> Int -> List (Svg msg)
+createCube n i stackNum =
     let
         count =
             stackQuarterList n stackNum
@@ -477,8 +1372,8 @@ stackCube n i stackNum =
 
         _ ->
             [ polygon
-                [ SvgAt.fill (Fill <| Color.rgb255 231 231 235)
-                , stroke Color.black
+                [ SvgAt.fill (Fill <| Color.rgb255 65 70 66)
+                , stroke <| Color.rgb255 65 70 66
                 , strokeLinejoin StrokeLinejoinRound
                 , strokeWidth (px 1.0)
                 , strokeOpacity (Opacity <| 1.0)
@@ -486,8 +1381,8 @@ stackCube n i stackNum =
                 ]
                 []
             , polygon
-                [ SvgAt.fill (Fill <| Color.rgb255 231 231 235)
-                , stroke Color.black
+                [ SvgAt.fill (Fill <| Color.rgb255 165 112 39)
+                , stroke <| Color.rgb255 65 70 66
                 , strokeLinejoin StrokeLinejoinRound
                 , strokeWidth (px 1.0)
                 , strokeOpacity (Opacity <| 1.0)
@@ -495,8 +1390,8 @@ stackCube n i stackNum =
                 ]
                 []
             , polygon
-                [ SvgAt.fill (Fill <| Color.rgb255 231 231 235)
-                , stroke Color.black
+                [ SvgAt.fill (Fill <| Color.rgb255 70 153 202)
+                , stroke <| Color.rgb255 65 70 66
                 , strokeLinejoin StrokeLinejoinRound
                 , strokeWidth (px 1.0)
                 , strokeOpacity (Opacity <| 1.0)
@@ -507,17 +1402,17 @@ stackCube n i stackNum =
 
 
 
-{- 再帰を使ってstackCubeをリスト化 -}
+{- 再帰を使ってcreateCubeをリスト化 -}
 
 
-stackCubeList : Int -> Int -> Int -> List (Svg msg)
-stackCubeList n i stackNum =
+createCubeList : Int -> Int -> Int -> List (Svg msg)
+createCubeList n i stackNum =
     case n of
         0 ->
             []
 
         _ ->
-            List.foldr (::) (stackCube (n - 2) i stackNum) (stackCubeList (n - 1) i stackNum)
+            List.foldr (::) (createCube (n - 1) i stackNum) (createCubeList (n - 1) i stackNum)
 
 
 
@@ -601,8 +1496,68 @@ drawRectYellow i j =
 -- クォータービューに色付きタイルを置くための関数（赤、黄、緑、青の４色を用意）
 
 
-stackTileColorRed : Int -> Int -> Int -> Html Msg
-stackTileColorRed n i stackNum =
+stackTileRed : Int -> Int -> Int -> Html Msg
+stackTileRed n i stackNum =
+    let
+        count =
+            List.range 0 i
+                |> SelectList.fromList
+                |> Maybe.withDefault (SelectList.singleton 0)
+                |> SelectList.selectWhileLoopBy i
+                |> SelectList.selected
+    in
+    case count of
+        0 ->
+            svg [ SvgAt.width (px 1000), SvgAt.height (px 1000), viewBox 0 0 1000 1000 ] <|
+                innerTileRed n (boardHeight - 1) stackNum
+
+        _ ->
+            svg [ SvgAt.width (px 1000), SvgAt.height (px 1000), viewBox 0 0 1000 1000 ] <|
+                innerTileRed n i stackNum
+
+
+stackTileBlue : Int -> Int -> Int -> Html Msg
+stackTileBlue n i stackNum =
+    let
+        count =
+            List.range 0 i
+                |> SelectList.fromList
+                |> Maybe.withDefault (SelectList.singleton 0)
+                |> SelectList.selectWhileLoopBy i
+                |> SelectList.selected
+    in
+    case count of
+        0 ->
+            svg [ SvgAt.width (px 1000), SvgAt.height (px 1000), viewBox 0 0 1000 1000 ] <|
+                innerTileRed n (boardHeight - 1) stackNum
+
+        _ ->
+            svg [ SvgAt.width (px 1000), SvgAt.height (px 1000), viewBox 0 0 1000 1000 ] <|
+                innerTileBlue n i stackNum
+
+
+stackTileYellow : Int -> Int -> Int -> Html Msg
+stackTileYellow n i stackNum =
+    let
+        count =
+            List.range 0 i
+                |> SelectList.fromList
+                |> Maybe.withDefault (SelectList.singleton 0)
+                |> SelectList.selectWhileLoopBy i
+                |> SelectList.selected
+    in
+    case count of
+        0 ->
+            svg [ SvgAt.width (px 1000), SvgAt.height (px 1000), viewBox 0 0 1000 1000 ] <|
+                innerTileRed n (boardHeight - 1) stackNum
+
+        _ ->
+            svg [ SvgAt.width (px 1000), SvgAt.height (px 1000), viewBox 0 0 1000 1000 ] <|
+                innerTileYellow n i stackNum
+
+
+stackTileGreen : Int -> Int -> Int -> Html Msg
+stackTileGreen n i stackNum =
     let
         count =
             List.range 0 i
@@ -617,86 +1572,29 @@ stackTileColorRed n i stackNum =
 
         _ ->
             svg [ SvgAt.width (px 1000), SvgAt.height (px 1000), viewBox 0 0 1000 1000 ] <|
-                inTileRed n i stackNum
-
-
-stackTileColorBlue : Int -> Int -> Int -> Html Msg
-stackTileColorBlue n i stackNum =
-    let
-        count =
-            List.range 0 i
-                |> SelectList.fromList
-                |> Maybe.withDefault (SelectList.singleton 0)
-                |> SelectList.selectWhileLoopBy i
-                |> SelectList.selected
-    in
-    case count of
-        0 ->
-            svg [] []
-
-        _ ->
-            svg [ SvgAt.width (px 1000), SvgAt.height (px 1000), viewBox 0 0 1000 1000 ] <|
-                inTileBlue n i stackNum
-
-
-stackTileColorYellow : Int -> Int -> Int -> Html Msg
-stackTileColorYellow n i stackNum =
-    let
-        count =
-            List.range 0 i
-                |> SelectList.fromList
-                |> Maybe.withDefault (SelectList.singleton 0)
-                |> SelectList.selectWhileLoopBy i
-                |> SelectList.selected
-    in
-    case count of
-        0 ->
-            svg [] []
-
-        _ ->
-            svg [ SvgAt.width (px 1000), SvgAt.height (px 1000), viewBox 0 0 1000 1000 ] <|
-                inTileYellow n i stackNum
-
-
-stackTileColorGreen : Int -> Int -> Int -> Html Msg
-stackTileColorGreen n i stackNum =
-    let
-        count =
-            List.range 0 i
-                |> SelectList.fromList
-                |> Maybe.withDefault (SelectList.singleton 0)
-                |> SelectList.selectWhileLoopBy i
-                |> SelectList.selected
-    in
-    case count of
-        0 ->
-            svg [] []
-
-        _ ->
-            svg [ SvgAt.width (px 1000), SvgAt.height (px 1000), viewBox 0 0 1000 1000 ] <|
-                inTileGreen n i stackNum
+                innerTileGreen n i stackNum
 
 
 
 {- 上記の関数の中身が煩雑になることを防ぐため、内部関数を用意 -}
 
 
-inTileRed : Int -> Int -> Int -> List (Svg msg)
-inTileRed n i stackNum =
+innerTileRed : Int -> Int -> Int -> List (Svg msg)
+innerTileRed n i stackNum =
     let
         count =
-            stackQuarterList (n - 1) stackNum
+            stackQuarterList n stackNum
                 |> SelectList.selectWhileLoopBy i
                 |> SelectList.index
 
         x =
-            stackQuarterList (n - 1) stackNum
+            stackQuarterList n stackNum
                 |> SelectList.selectWhileLoopBy i
                 |> SelectList.selected
                 |> Tuple.first
 
         y =
-            stackQuarterList (n - 1) stackNum
+            stackQuarterList n stackNum
                 |> SelectList.selectWhileLoopBy i
                 |> SelectList.selected
                 |> Tuple.second
@@ -742,22 +1640,22 @@ inTileRed n i stackNum =
             ]
 
 
-inTileBlue : Int -> Int -> Int -> List (Svg msg)
-inTileBlue n i stackNum =
+innerTileBlue : Int -> Int -> Int -> List (Svg msg)
+innerTileBlue n i stackNum =
     let
         count =
-            stackQuarterList (n - 1) stackNum
+            stackQuarterList n stackNum
                 |> SelectList.selectWhileLoopBy i
                 |> SelectList.index
 
         x =
-            stackQuarterList (n - 1) stackNum
+            stackQuarterList n stackNum
                 |> SelectList.selectWhileLoopBy i
                 |> SelectList.selected
                 |> Tuple.first
 
         y =
-            stackQuarterList (n - 1) stackNum
+            stackQuarterList n stackNum
                 |> SelectList.selectWhileLoopBy i
                 |> SelectList.selected
                 |> Tuple.second
@@ -803,22 +1701,22 @@ inTileBlue n i stackNum =
             ]
 
 
-inTileYellow : Int -> Int -> Int -> List (Svg msg)
-inTileYellow n i stackNum =
+innerTileYellow : Int -> Int -> Int -> List (Svg msg)
+innerTileYellow n i stackNum =
     let
         count =
-            stackQuarterList (n - 1) stackNum
+            stackQuarterList n stackNum
                 |> SelectList.selectWhileLoopBy i
                 |> SelectList.index
 
         x =
-            stackQuarterList (n - 1) stackNum
+            stackQuarterList n stackNum
                 |> SelectList.selectWhileLoopBy i
                 |> SelectList.selected
                 |> Tuple.first
 
         y =
-            stackQuarterList (n - 1) stackNum
+            stackQuarterList n stackNum
                 |> SelectList.selectWhileLoopBy i
                 |> SelectList.selected
                 |> Tuple.second
@@ -864,22 +1762,22 @@ inTileYellow n i stackNum =
             ]
 
 
-inTileGreen : Int -> Int -> Int -> List (Svg msg)
-inTileGreen n i stackNum =
+innerTileGreen : Int -> Int -> Int -> List (Svg msg)
+innerTileGreen n i stackNum =
     let
         count =
-            stackQuarterList (n - 1) stackNum
+            stackQuarterList n stackNum
                 |> SelectList.selectWhileLoopBy i
                 |> SelectList.index
 
         x =
-            stackQuarterList (n - 1) stackNum
+            stackQuarterList n stackNum
                 |> SelectList.selectWhileLoopBy i
                 |> SelectList.selected
                 |> Tuple.first
 
         y =
-            stackQuarterList (n - 1) stackNum
+            stackQuarterList n stackNum
                 |> SelectList.selectWhileLoopBy i
                 |> SelectList.selected
                 |> Tuple.second
@@ -929,7 +1827,7 @@ stackQuarterList : Int -> Int -> SelectList.SelectList ( Float, Float )
 stackQuarterList n stackNum =
     createXYList n
         |> List.map (\( x, y ) -> ( quarterX x y, quarterY x y ))
-        |> List.map (\( x, y ) -> ( x, y - (stackNum |> toFloat) * h / 2 ))
+        |> List.map (\( x, y ) -> ( x, y - (stackNum |> toFloat) * h / 4 ))
         |> SelectList.fromList
         |> Maybe.withDefault (SelectList.singleton ( 0.0, 0.0 ))
 
@@ -942,7 +1840,7 @@ drawStackCube i stackNum =
 
         _ ->
             List.foldr (::)
-                (stackCubeList (maxSize - 2) i stackNum
+                (createCubeList maxElement i stackNum
                     |> List.reverse
                 )
             <|
@@ -954,7 +1852,7 @@ drawBaseCube i j stackNum =
     case i of
         0 ->
             List.foldr (::)
-                (stackCubeList 0 (j - 1) stackNum
+                (createCubeList 0 j stackNum
                     |> List.reverse
                 )
             <|
@@ -967,7 +1865,7 @@ drawBaseCube i j stackNum =
 
                 _ ->
                     List.foldr (::)
-                        (stackCubeList (i - 1) (j - 1) stackNum
+                        (createCubeList (i - 1) (j - 1) stackNum
                             |> List.reverse
                         )
                     <|
@@ -982,7 +1880,7 @@ drawQuarterBoard i j stackNum =
 
         _ ->
             svg [ SvgAt.width (px 1000), SvgAt.height (px 1000), viewBox 0 0 1000 1000 ] <|
-                List.foldr (::) [] (drawBaseCube (i - 1) (j - 1) stackNum)
+                List.foldr (::) [] (drawBaseCube i j stackNum)
 
 
 
@@ -996,7 +1894,7 @@ drawQuarterBoard i j stackNum =
 
 h : Float
 h =
-    44
+    48
 
 
 w : Float
@@ -1006,12 +1904,12 @@ w =
 
 offsetX : Float
 offsetX =
-    50
+    0
 
 
 offsetY : Float
 offsetY =
-    200
+    600
 
 
 
@@ -1036,17 +1934,17 @@ quarterY x y =
 
 top : List ( Float, Float )
 top =
-    [ ( 0, h / 4 ), ( w / 2, 0 ), ( w, h / 4 ), ( w / 2, h / 2 ) ]
+    [ ( 0, h / 2 ), ( w / 2, h / 4 ), ( w, h / 2 ), ( w / 2, 3 * h / 4 ) ]
 
 
 leftSide : List ( Float, Float )
 leftSide =
-    [ ( 0, h / 4 ), ( w / 2, h / 2 ), ( w / 2, h ), ( 0, 3 * h / 4 ) ]
+    [ ( 0, h / 2 ), ( w / 2, 3 * h / 4 ), ( w / 2, h ), ( 0, 3 * h / 4 ) ]
 
 
 rightSide : List ( Float, Float )
 rightSide =
-    [ ( w / 2, h / 2 ), ( w, h / 4 ), ( w, 3 * h / 4 ), ( w / 2, h ) ]
+    [ ( w / 2, 3 * h / 4 ), ( w, h / 2 ), ( w, 3 * h / 4 ), ( w / 2, h ) ]
 
 
 
