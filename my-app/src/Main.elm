@@ -808,7 +808,6 @@ stackDoors xindex start end stackNum =
     case xindex of
         0 ->
             [ Order end <| stackTileDoor 0 end stackNum ]
-
         _ ->
             case end of
                 0 ->
