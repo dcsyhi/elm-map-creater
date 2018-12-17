@@ -1,4 +1,4 @@
-module Main exposing (Model, Msg(..), Order, Point, arrangeStackTiles_1, arrangeStackTiles_10, arrangeStackTiles_11, arrangeStackTiles_12, arrangeStackTiles_13, arrangeStackTiles_14, arrangeStackTiles_15, arrangeStackTiles_16, arrangeStackTiles_17, arrangeStackTiles_18, arrangeStackTiles_19, arrangeStackTiles_2, arrangeStackTiles_20, arrangeStackTiles_21, arrangeStackTiles_3, arrangeStackTiles_4, arrangeStackTiles_5, arrangeStackTiles_6, arrangeStackTiles_7, arrangeStackTiles_8, arrangeStackTiles_9, boardHeight, boardWidth, buttonMoveTile, createCube, createCubeList, createList, createSelectList, createXYList, drawBaseCube, drawBoard, drawColumn, drawColumnList, drawObjects, drawPoints, drawQuarterBoard, drawQuarterObjects, drawRectBlue, drawRectGreen, drawRectRed, drawRectYellow, drawRow, drawRowList, drawStackCube, getPointXList, getPointYList, h, init, innerTileBlue, innerTileBuilding, innerTileDoor, innerTileGreen, innerTileLand, innerTileRed, innerTileYellow, leftSide, main, maxElement, offsetX, offsetY, orderCube, outputColumn, outputColumnRev, outputQuarterColumn, outputRow, quarterX, quarterY, rightSide, stackBuildings, stackDoors, stackQuarterList, stackTileBlue, stackTileBuilding, stackTileDoor, stackTileGreen, stackTileLand, stackTileRed, stackTileYellow, stackTiles, swap, tileHeight, tileWidth, top, townOfBarumamussa, update, view, w, zip)
+module Main exposing (Model, Msg(..), Order, Point, arrangeStackTiles_1, arrangeStackTiles_10, arrangeStackTiles_11, arrangeStackTiles_12, arrangeStackTiles_13, arrangeStackTiles_14, arrangeStackTiles_15, arrangeStackTiles_16, arrangeStackTiles_17, arrangeStackTiles_18, arrangeStackTiles_19, arrangeStackTiles_2, arrangeStackTiles_20, arrangeStackTiles_21, arrangeStackTiles_3, arrangeStackTiles_4, arrangeStackTiles_5, arrangeStackTiles_6, arrangeStackTiles_7, arrangeStackTiles_8, arrangeStackTiles_9, boardHeight, boardWidth, chapterTitle, createList, createSelectList, createTile, createTileList, createXYList, drawBaseTile, drawBoard, drawColumn, drawColumnList, drawObjects, drawPoints, drawQuarterBoard, drawQuarterObjects, drawRectBlue, drawRectGreen, drawRectRed, drawRectYellow, drawRow, drawRowList, drawStackTile, getPointXList, getPointYList, h, init, innerTileBlue, innerTileBuilding, innerTileDoor, innerTileGreen, innerTileLand, innerTileRed, innerTileYellow, leftSide, main, maxElement, offsetX, offsetY, orderTile, outputColumn, outputColumnRev, outputRow, quarterX, quarterY, rightSide, stackBuildings, stackDoors, stackQuarterList, stackTileBlue, stackTileBuilding, stackTileDoor, stackTileGreen, stackTileLand, stackTileRed, stackTileYellow, stackTiles, swap, tileHeight, tileWidth, top, townOfBarumamussa, update, view, w, zip)
 
 import Array exposing (..)
 import Browser
@@ -102,14 +102,12 @@ update msg model =
 ---- VIEW ----
 
 
-buttonMoveTile : Html Msg
-buttonMoveTile =
+chapterTitle : Html Msg
+chapterTitle =
     div []
-        [ img [ src "/logo.svg" ] []
-        , h1 [] [ Html.text "Your Elm App is working!" ]
-        , button [ onClick MoveRow ] [ Html.text "縦に動く" ]
-        , button [ onClick MoveColumn ] [ Html.text "横に動く" ]
-        , button [ onClick Reset ] [ Html.text "リセット" ]
+        [ h2 [] [ Html.text "Chapter-1." ]
+        , h2 [] [ Html.text "僕にその手を汚せというのか" ]
+        , hr [] []
         ]
 
 
@@ -134,8 +132,8 @@ type alias Order =
     }
 
 
-orderCube : Int -> Int -> List Order
-orderCube i j =
+orderTile : Int -> Int -> List Order
+orderTile i j =
     let
         countRedFirst =
             modBy (boardWidth - 1) i
@@ -265,7 +263,7 @@ arrangeStackTiles_3 =
 
 arrangeStackTiles_4 : List Order
 arrangeStackTiles_4 =
-    -- stackCubes 列名 始点 終点 高さ
+    -- stackTiles 列名 始点 終点 高さ
     List.concat <|
         [ stackTiles 4 1 16 1
         , stackTiles 4 1 16 2
@@ -291,7 +289,7 @@ arrangeStackTiles_4 =
 
 arrangeStackTiles_5 : List Order
 arrangeStackTiles_5 =
-    -- stackCubes 列名 始点 終点 高さ
+    -- stackTiles 列名 始点 終点 高さ
     List.concat <|
         [ stackTiles 5 1 16 1
         , stackTiles 5 1 16 2
@@ -313,7 +311,7 @@ arrangeStackTiles_5 =
 
 arrangeStackTiles_6 : List Order
 arrangeStackTiles_6 =
-    -- stackCubes 列名 始点 終点 高さ
+    -- stackTiles 列名 始点 終点 高さ
     List.concat <|
         [ stackTiles 6 1 16 1
         , stackTiles 6 1 16 2
@@ -339,7 +337,7 @@ arrangeStackTiles_6 =
 
 arrangeStackTiles_7 : List Order
 arrangeStackTiles_7 =
-    -- stackCubes 列名 始点 終点 高さ
+    -- stackTiles 列名 始点 終点 高さ
     List.concat <|
         [ stackTiles 7 1 16 1
         , stackTiles 7 1 16 2
@@ -367,7 +365,7 @@ arrangeStackTiles_7 =
 
 arrangeStackTiles_8 : List Order
 arrangeStackTiles_8 =
-    -- stackCubes 列名 始点 終点 高さ
+    -- stackTiles 列名 始点 終点 高さ
     List.concat <|
         [ stackTiles 8 1 16 1
         , stackTiles 8 1 16 2
@@ -398,7 +396,7 @@ arrangeStackTiles_8 =
 
 arrangeStackTiles_9 : List Order
 arrangeStackTiles_9 =
-    -- stackCubes 列名 始点 終点 高さ
+    -- stackTiles 列名 始点 終点 高さ
     List.concat <|
         [ stackTiles 9 1 16 1
         , stackTiles 9 1 16 2
@@ -420,7 +418,8 @@ arrangeStackTiles_9 =
         , stackTiles 9 1 1 17
         , stackTiles 9 1 1 18
         , stackTiles 9 1 1 19
-        , stackBuildings 9 3 4 14
+        , stackBuildings 9 2 4 14
+        , stackBuildings 9 2 4 15
         , stackBuildings 9 11 11 12
         , stackBuildings 9 11 11 13
         , stackBuildings 9 11 11 14
@@ -448,7 +447,7 @@ arrangeStackTiles_9 =
 
 arrangeStackTiles_10 : List Order
 arrangeStackTiles_10 =
-    -- stackCubes 列名 始点 終点 高さ
+    -- stackTiles 列名 始点 終点 高さ
     List.concat <|
         [ stackTiles 10 1 16 1
         , stackTiles 10 1 16 2
@@ -489,9 +488,8 @@ arrangeStackTiles_10 =
         , stackBuildings 10 2 2 17
         , stackBuildings 10 2 2 18
         , stackBuildings 10 2 2 19
-        , stackDoors 10 3 3 15
         , stackDoors 10 3 3 16
-        , stackBuildings 10 3 3 17
+        , stackDoors 10 3 3 17
         , stackBuildings 10 4 5 16
         , stackBuildings 10 4 4 17
         , stackBuildings 10 3 4 18
@@ -500,7 +498,7 @@ arrangeStackTiles_10 =
 
 arrangeStackTiles_11 : List Order
 arrangeStackTiles_11 =
-    -- stackCubes 列名 始点 終点 高さ
+    -- stackTiles 列名 始点 終点 高さ
     List.concat <|
         [ stackTiles 11 1 16 1
         , stackTiles 11 1 16 2
@@ -542,7 +540,7 @@ arrangeStackTiles_11 =
 
 arrangeStackTiles_12 : List Order
 arrangeStackTiles_12 =
-    -- stackCubes 列名 始点 終点 高さ
+    -- stackTiles 列名 始点 終点 高さ
     List.concat <|
         [ stackTiles 12 1 16 1
         , stackTiles 12 1 16 2
@@ -558,7 +556,7 @@ arrangeStackTiles_12 =
         , stackTiles 12 1 16 12
         , stackTiles 12 1 16 13
         , stackTiles 12 1 15 14
-        , stackBuildings 12 16 16 14
+        , stackBuildings 12 15 16 14
         , stackTiles 12 1 14 15
         , stackTiles 12 1 13 16
         , stackTiles 12 1 5 17
@@ -579,7 +577,7 @@ arrangeStackTiles_12 =
 
 arrangeStackTiles_13 : List Order
 arrangeStackTiles_13 =
-    -- stackCubes 列名 始点 終点 高さ
+    -- stackTiles 列名 始点 終点 高さ
     List.concat <|
         [ stackTiles 13 1 16 1
         , stackTiles 13 1 16 2
@@ -636,7 +634,7 @@ arrangeStackTiles_13 =
 
 arrangeStackTiles_14 : List Order
 arrangeStackTiles_14 =
-    -- stackCubes 列名 始点 終点 高さ
+    -- stackTiles 列名 始点 終点 高さ
     List.concat <|
         [ stackTiles 14 1 13 1
         , stackTiles 14 1 13 2
@@ -691,7 +689,7 @@ arrangeStackTiles_14 =
 
 arrangeStackTiles_15 : List Order
 arrangeStackTiles_15 =
-    -- stackCubes 列名 始点 終点 高さ
+    -- stackTiles 列名 始点 終点 高さ
     List.concat <|
         [ stackTiles 15 1 16 1
         , stackTiles 15 1 16 2
@@ -739,7 +737,7 @@ arrangeStackTiles_15 =
 
 arrangeStackTiles_16 : List Order
 arrangeStackTiles_16 =
-    -- stackCubes 列名 始点 終点 高さ
+    -- stackTiles 列名 始点 終点 高さ
     List.concat <|
         [ stackTiles 16 1 16 1
         , stackTiles 16 1 16 2
@@ -789,7 +787,7 @@ arrangeStackTiles_16 =
 
 arrangeStackTiles_17 : List Order
 arrangeStackTiles_17 =
-    -- stackCubes 列名 始点 終点 高さ
+    -- stackTiles 列名 始点 終点 高さ
     List.concat <|
         [ stackTiles 17 1 16 1
         , stackTiles 17 1 16 2
@@ -837,7 +835,7 @@ arrangeStackTiles_17 =
 
 arrangeStackTiles_18 : List Order
 arrangeStackTiles_18 =
-    -- stackCubes 列名 始点 終点 高さ
+    -- stackTiles 列名 始点 終点 高さ
     List.concat <|
         [ stackTiles 18 1 16 1
         , stackTiles 18 1 16 2
@@ -882,7 +880,7 @@ arrangeStackTiles_18 =
 
 arrangeStackTiles_19 : List Order
 arrangeStackTiles_19 =
-    -- stackCubes 列名 始点 終点 高さ
+    -- stackTiles 列名 始点 終点 高さ
     List.concat <|
         [ stackTiles 19 1 16 1
         , stackTiles 19 1 16 2
@@ -920,7 +918,7 @@ arrangeStackTiles_19 =
 
 arrangeStackTiles_20 : List Order
 arrangeStackTiles_20 =
-    -- stackCubes 列名 始点 終点 高さ
+    -- stackTiles 列名 始点 終点 高さ
     List.concat <|
         [ stackTiles 20 1 16 1
         , stackTiles 20 1 16 2
@@ -966,7 +964,7 @@ arrangeStackTiles_20 =
 
 arrangeStackTiles_21 : List Order
 arrangeStackTiles_21 =
-    -- stackCubes 列名 始点 終点 高さ
+    -- stackTiles 列名 始点 終点 高さ
     List.concat <|
         [ stackTiles 21 1 16 1
         , stackTiles 21 1 16 2
@@ -1302,7 +1300,7 @@ drawQuarterObjects i j =
     svg [ SvgAt.width (px 1000), SvgAt.height (px 1000), viewBox 0 0 1000 1000 ] <|
         List.foldr (::)
             []
-            (orderCube i (j + 1) |> List.sortBy .index |> List.map .element)
+            (orderTile i (j + 1) |> List.sortBy .index |> List.map .element)
 
 
 
@@ -1316,11 +1314,9 @@ view model =
 
     else
         div []
-            [ buttonMoveTile
-            , hr [] []
-            , drawObjects model.columnCount model.rowCount
-            , hr [] []
+            [ chapterTitle
             , drawQuarterObjects model.columnCount model.rowCount
+            , hr [] []
             ]
 
 
@@ -1530,24 +1526,21 @@ createXYList n =
     zip a b
 
 
-
--- クォータービューのSelectListを作成する
-
-
-outputQuarterColumn : Int -> SelectList.SelectList ( Float, Float )
-outputQuarterColumn n =
+stackQuarterList : Int -> Int -> SelectList.SelectList ( Float, Float )
+stackQuarterList n stackNum =
     createXYList n
         |> List.map (\( x, y ) -> ( quarterX x y, quarterY x y ))
+        |> List.map (\( x, y ) -> ( x, y - (stackNum |> toFloat) * h / 4 ))
         |> SelectList.fromList
         |> Maybe.withDefault (SelectList.singleton ( 0.0, 0.0 ))
 
 
 
-{- createCube:高さ方向にタイルチップを積み上げるための関数 -}
+{- createTile:タイルチップを座標平面上に配置するための関数 -}
 
 
-createCube : Int -> Int -> Int -> List (Svg msg)
-createCube n i stackNum =
+createTile : Int -> Int -> Int -> List (Svg msg)
+createTile n i stackNum =
     let
         count =
             stackQuarterList n stackNum
@@ -1602,17 +1595,68 @@ createCube n i stackNum =
 
 
 
-{- 再帰を使ってcreateCubeをリスト化 -}
+{- 再帰を使ってcreateTileをリスト化 -}
 
 
-createCubeList : Int -> Int -> Int -> List (Svg msg)
-createCubeList n i stackNum =
+createTileList : Int -> Int -> Int -> List (Svg msg)
+createTileList n i stackNum =
     case n of
         0 ->
             []
 
         _ ->
-            List.foldr (::) (createCube (n - 1) i stackNum) (createCubeList (n - 1) i stackNum)
+            List.foldr (::) (createTile (n - 1) i stackNum) (createTileList (n - 1) i stackNum)
+
+
+drawStackTile : Int -> Int -> List (Svg msg)
+drawStackTile i stackNum =
+    case i of
+        0 ->
+            []
+
+        _ ->
+            List.foldr (::)
+                (createTileList maxElement i stackNum
+                    |> List.reverse
+                )
+            <|
+                drawStackTile (i - 1) stackNum
+
+
+drawBaseTile : Int -> Int -> Int -> List (Svg msg)
+drawBaseTile i j stackNum =
+    case i of
+        0 ->
+            List.foldr (::)
+                (createTileList 0 j stackNum
+                    |> List.reverse
+                )
+            <|
+                drawBaseTile 0 (j - 1) stackNum
+
+        _ ->
+            case j of
+                0 ->
+                    []
+
+                _ ->
+                    List.foldr (::)
+                        (createTileList (i - 1) (j - 1) stackNum
+                            |> List.reverse
+                        )
+                    <|
+                        drawBaseTile i (j - 1) stackNum
+
+
+drawQuarterBoard : Int -> Int -> Int -> Html Msg
+drawQuarterBoard i j stackNum =
+    case ( i, j ) of
+        ( 0, 0 ) ->
+            svg [] []
+
+        _ ->
+            svg [ SvgAt.width (px 1000), SvgAt.height (px 1000), viewBox 0 0 1000 1000 ] <|
+                List.foldr (::) [] (drawBaseTile i j stackNum)
 
 
 
@@ -2021,66 +2065,6 @@ innerTileGreen n i stackNum =
                 ]
                 []
             ]
-
-
-stackQuarterList : Int -> Int -> SelectList.SelectList ( Float, Float )
-stackQuarterList n stackNum =
-    createXYList n
-        |> List.map (\( x, y ) -> ( quarterX x y, quarterY x y ))
-        |> List.map (\( x, y ) -> ( x, y - (stackNum |> toFloat) * h / 4 ))
-        |> SelectList.fromList
-        |> Maybe.withDefault (SelectList.singleton ( 0.0, 0.0 ))
-
-
-drawStackCube : Int -> Int -> List (Svg msg)
-drawStackCube i stackNum =
-    case i of
-        0 ->
-            []
-
-        _ ->
-            List.foldr (::)
-                (createCubeList maxElement i stackNum
-                    |> List.reverse
-                )
-            <|
-                drawStackCube (i - 1) stackNum
-
-
-drawBaseCube : Int -> Int -> Int -> List (Svg msg)
-drawBaseCube i j stackNum =
-    case i of
-        0 ->
-            List.foldr (::)
-                (createCubeList 0 j stackNum
-                    |> List.reverse
-                )
-            <|
-                drawBaseCube 0 (j - 1) stackNum
-
-        _ ->
-            case j of
-                0 ->
-                    []
-
-                _ ->
-                    List.foldr (::)
-                        (createCubeList (i - 1) (j - 1) stackNum
-                            |> List.reverse
-                        )
-                    <|
-                        drawBaseCube i (j - 1) stackNum
-
-
-drawQuarterBoard : Int -> Int -> Int -> Html Msg
-drawQuarterBoard i j stackNum =
-    case ( i, j ) of
-        ( 0, 0 ) ->
-            svg [] []
-
-        _ ->
-            svg [ SvgAt.width (px 1000), SvgAt.height (px 1000), viewBox 0 0 1000 1000 ] <|
-                List.foldr (::) [] (drawBaseCube i j stackNum)
 
 
 
