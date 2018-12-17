@@ -4,10 +4,10 @@
 アイデア
 -----------------
 * マップに高低差概念を取り入れる
+https://ellie-app.com/47tQ7Dj7Q4ka1
 
-* Ellieのアドレス
-https://ellie-app.com/44NRYqRWZ7da1
-
+参考情報
+-----------------
 * 等角投影図について 
 http://tonbi.jp/Game/Essay/036/
 
