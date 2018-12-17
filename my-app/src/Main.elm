@@ -1,4 +1,4 @@
-module Main exposing (Model, Msg(..), Order, Point, arrangeStackTiles_1, arrangeStackTiles_10, arrangeStackTiles_11, arrangeStackTiles_12, arrangeStackTiles_13, arrangeStackTiles_14, arrangeStackTiles_15, arrangeStackTiles_16, arrangeStackTiles_17, arrangeStackTiles_18, arrangeStackTiles_19, arrangeStackTiles_2, arrangeStackTiles_20, arrangeStackTiles_21, arrangeStackTiles_3, arrangeStackTiles_4, arrangeStackTiles_5, arrangeStackTiles_6, arrangeStackTiles_7, arrangeStackTiles_8, arrangeStackTiles_9, boardHeight, boardWidth, chapterTitle, createList, createSelectList, createTile, createTileList, createXYList, drawBaseTile, drawBoard, drawColumn, drawColumnList, drawObjects, drawPoints, drawQuarterBoard, drawQuarterObjects, drawRectBlue, drawRectGreen, drawRectRed, drawRectYellow, drawRow, drawRowList, drawStackTile, getPointXList, getPointYList, h, init, innerTileBlue, innerTileBuilding, innerTileDoor, innerTileGreen, innerTileLand, innerTileRed, innerTileYellow, leftSide, main, maxElement, offsetX, offsetY, orderTile, outputColumn, outputColumnRev, outputRow, quarterX, quarterY, rightSide, stackBuildings, stackDoors, stackQuarterList, stackTileBlue, stackTileBuilding, stackTileDoor, stackTileGreen, stackTileLand, stackTileRed, stackTileYellow, stackTiles, swap, tileHeight, tileWidth, top, townOfBarumamussa, update, view, w, zip)
+module Main exposing (Model, Msg(..), Order, Point, arrangeStackTiles_1, arrangeStackTiles_10, arrangeStackTiles_11, arrangeStackTiles_12, arrangeStackTiles_13, arrangeStackTiles_14, arrangeStackTiles_15, arrangeStackTiles_16, arrangeStackTiles_17, arrangeStackTiles_18, arrangeStackTiles_19, arrangeStackTiles_2, arrangeStackTiles_20, arrangeStackTiles_21, arrangeStackTiles_3, arrangeStackTiles_4, arrangeStackTiles_5, arrangeStackTiles_6, arrangeStackTiles_7, arrangeStackTiles_8, arrangeStackTiles_9, boardHeight, boardWidth, chapterTitle, createList, createSelectList, createTile, createTileList, createXYList, drawBaseTile, drawBoard, drawColumn, drawColumnList, drawObjects, drawPoints, drawQuarterBoard, drawQuarterObjects, drawRectBlue, drawRectGreen, drawRectRed, drawRectYellow, drawRow, drawRowList, drawStackTile, getPointXList, getPointYList, h, init, innerTileBlue, innerTileBuilding, innerTileDoor, innerTileGreen, innerTileLand, innerTileRed, innerTileYellow, leftSide, main, maxElement, offsetX, offsetY, orderTile, outputColumn, outputColumnRev, outputQuarterList, outputRow, quarterX, quarterY, rightSide, stackBuildings, stackDoors, stackTileBlue, stackTileBuilding, stackTileDoor, stackTileGreen, stackTileLand, stackTileRed, stackTileYellow, stackTiles, swap, tileHeight, tileWidth, top, townOfBarumamussa, update, view, w, zip)
 
 import Array exposing (..)
 import Browser
@@ -1048,18 +1048,18 @@ innerTileDoor : Int -> Int -> Int -> List (Svg msg)
 innerTileDoor n i stackNum =
     let
         count =
-            stackQuarterList n stackNum
+            outputQuarterList n stackNum
                 |> SelectList.selectWhileLoopBy i
                 |> SelectList.index
 
         x =
-            stackQuarterList n stackNum
+            outputQuarterList n stackNum
                 |> SelectList.selectWhileLoopBy i
                 |> SelectList.selected
                 |> Tuple.first
 
         y =
-            stackQuarterList n stackNum
+            outputQuarterList n stackNum
                 |> SelectList.selectWhileLoopBy i
                 |> SelectList.selected
                 |> Tuple.second
@@ -1123,18 +1123,18 @@ innerTileBuilding : Int -> Int -> Int -> List (Svg msg)
 innerTileBuilding n i stackNum =
     let
         count =
-            stackQuarterList n stackNum
+            outputQuarterList n stackNum
                 |> SelectList.selectWhileLoopBy i
                 |> SelectList.index
 
         x =
-            stackQuarterList n stackNum
+            outputQuarterList n stackNum
                 |> SelectList.selectWhileLoopBy i
                 |> SelectList.selected
                 |> Tuple.first
 
         y =
-            stackQuarterList n stackNum
+            outputQuarterList n stackNum
                 |> SelectList.selectWhileLoopBy i
                 |> SelectList.selected
                 |> Tuple.second
@@ -1198,18 +1198,18 @@ innerTileLand : Int -> Int -> Int -> List (Svg msg)
 innerTileLand n i stackNum =
     let
         count =
-            stackQuarterList n stackNum
+            outputQuarterList n stackNum
                 |> SelectList.selectWhileLoopBy i
                 |> SelectList.index
 
         x =
-            stackQuarterList n stackNum
+            outputQuarterList n stackNum
                 |> SelectList.selectWhileLoopBy i
                 |> SelectList.selected
                 |> Tuple.first
 
         y =
-            stackQuarterList n stackNum
+            outputQuarterList n stackNum
                 |> SelectList.selectWhileLoopBy i
                 |> SelectList.selected
                 |> Tuple.second
@@ -1526,8 +1526,8 @@ createXYList n =
     zip a b
 
 
-stackQuarterList : Int -> Int -> SelectList.SelectList ( Float, Float )
-stackQuarterList n stackNum =
+outputQuarterList : Int -> Int -> SelectList.SelectList ( Float, Float )
+outputQuarterList n stackNum =
     createXYList n
         |> List.map (\( x, y ) -> ( quarterX x y, quarterY x y ))
         |> List.map (\( x, y ) -> ( x, y - (stackNum |> toFloat) * h / 4 ))
@@ -1543,18 +1543,18 @@ createTile : Int -> Int -> Int -> List (Svg msg)
 createTile n i stackNum =
     let
         count =
-            stackQuarterList n stackNum
+            outputQuarterList n stackNum
                 |> SelectList.selectWhileLoopBy i
                 |> SelectList.index
 
         x =
-            stackQuarterList n stackNum
+            outputQuarterList n stackNum
                 |> SelectList.selectWhileLoopBy i
                 |> SelectList.selected
                 |> Tuple.first
 
         y =
-            stackQuarterList n stackNum
+            outputQuarterList n stackNum
                 |> SelectList.selectWhileLoopBy i
                 |> SelectList.selected
                 |> Tuple.second
@@ -1827,18 +1827,18 @@ innerTileRed : Int -> Int -> Int -> List (Svg msg)
 innerTileRed n i stackNum =
     let
         count =
-            stackQuarterList n stackNum
+            outputQuarterList n stackNum
                 |> SelectList.selectWhileLoopBy i
                 |> SelectList.index
 
         x =
-            stackQuarterList n stackNum
+            outputQuarterList n stackNum
                 |> SelectList.selectWhileLoopBy i
                 |> SelectList.selected
                 |> Tuple.first
 
         y =
-            stackQuarterList n stackNum
+            outputQuarterList n stackNum
                 |> SelectList.selectWhileLoopBy i
                 |> SelectList.selected
                 |> Tuple.second
@@ -1888,18 +1888,18 @@ innerTileBlue : Int -> Int -> Int -> List (Svg msg)
 innerTileBlue n i stackNum =
     let
         count =
-            stackQuarterList n stackNum
+            outputQuarterList n stackNum
                 |> SelectList.selectWhileLoopBy i
                 |> SelectList.index
 
         x =
-            stackQuarterList n stackNum
+            outputQuarterList n stackNum
                 |> SelectList.selectWhileLoopBy i
                 |> SelectList.selected
                 |> Tuple.first
 
         y =
-            stackQuarterList n stackNum
+            outputQuarterList n stackNum
                 |> SelectList.selectWhileLoopBy i
                 |> SelectList.selected
                 |> Tuple.second
@@ -1949,18 +1949,18 @@ innerTileYellow : Int -> Int -> Int -> List (Svg msg)
 innerTileYellow n i stackNum =
     let
         count =
-            stackQuarterList n stackNum
+            outputQuarterList n stackNum
                 |> SelectList.selectWhileLoopBy i
                 |> SelectList.index
 
         x =
-            stackQuarterList n stackNum
+            outputQuarterList n stackNum
                 |> SelectList.selectWhileLoopBy i
                 |> SelectList.selected
                 |> Tuple.first
 
         y =
-            stackQuarterList n stackNum
+            outputQuarterList n stackNum
                 |> SelectList.selectWhileLoopBy i
                 |> SelectList.selected
                 |> Tuple.second
@@ -2010,18 +2010,18 @@ innerTileGreen : Int -> Int -> Int -> List (Svg msg)
 innerTileGreen n i stackNum =
     let
         count =
-            stackQuarterList n stackNum
+            outputQuarterList n stackNum
                 |> SelectList.selectWhileLoopBy i
                 |> SelectList.index
 
         x =
-            stackQuarterList n stackNum
+            outputQuarterList n stackNum
                 |> SelectList.selectWhileLoopBy i
                 |> SelectList.selected
                 |> Tuple.first
 
         y =
-            stackQuarterList n stackNum
+            outputQuarterList n stackNum
                 |> SelectList.selectWhileLoopBy i
                 |> SelectList.selected
                 |> Tuple.second
