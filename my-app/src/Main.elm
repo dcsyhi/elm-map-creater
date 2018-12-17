@@ -279,13 +279,13 @@ arrangeStackTiles_4 =
         , stackBuildings 4 5 5 9
         , stackDoors 4 6 6 7
         , stackDoors 4 6 6 8
-        , stackDoors 4 6 6 9
-        , stackBuildings 4 5 6 10
+        , stackBuildings 4 6 6 9
         , stackTiles 4 1 4 9
         , stackTiles 4 1 3 10
         , stackTiles 4 1 3 11
         , stackTiles 4 1 3 12
         , stackTiles 4 1 3 13
+        , stackBuildings 4 5 6 10
         ]
 
 
@@ -357,7 +357,7 @@ arrangeStackTiles_7 =
         , stackBuildings 7 1 4 14
         , stackDoors 7 3 3 15
         , stackDoors 7 3 3 16
-        , stackDoors 7 3 3 17
+        , stackBuildings 7 3 3 17
         , stackBuildings 7 1 2 15
         , stackBuildings 7 1 2 16
         , stackBuildings 7 1 2 17
@@ -436,7 +436,7 @@ arrangeStackTiles_9 =
         , stackBuildings 9 12 12 17
         , stackDoors 9 13 13 13
         , stackDoors 9 13 13 14
-        , stackDoors 9 13 13 15
+        , stackBuildings 9 13 13 15
         , stackBuildings 9 14 14 12
         , stackBuildings 9 14 14 13
         , stackBuildings 9 14 14 14
@@ -491,7 +491,7 @@ arrangeStackTiles_10 =
         , stackBuildings 10 2 2 19
         , stackDoors 10 3 3 15
         , stackDoors 10 3 3 16
-        , stackDoors 10 3 3 17
+        , stackBuildings 10 3 3 17
         , stackBuildings 10 4 5 16
         , stackBuildings 10 4 4 17
         , stackBuildings 10 3 4 18
@@ -560,12 +560,15 @@ arrangeStackTiles_12 =
         , stackTiles 12 1 15 14
         , stackBuildings 12 16 16 14
         , stackTiles 12 1 14 15
-        , stackTiles 12 1 14 16
+        , stackTiles 12 1 13 16
+        , stackTiles 12 1 5 17
         , stackTiles 12 1 1 16
         , stackTiles 12 1 1 17
         , stackTiles 12 1 1 18
         , stackTiles 12 1 1 19
-        , stackTiles 12 1 5 17
+        , stackTiles 12 1 1 20
+        , stackTiles 12 1 1 21
+        , stackTiles 12 1 1 22
         , stackBuildings 12 2 4 18
         , stackBuildings 12 2 4 19
         , stackBuildings 12 8 9 17
@@ -601,7 +604,7 @@ arrangeStackTiles_13 =
         , stackDoors 13 15 15 14
         , stackDoors 13 15 15 15
         , stackDoors 13 15 15 16
-        , stackDoors 13 15 15 17
+        , stackBuildings 13 15 15 17
         , stackBuildings 13 16 16 14
         , stackBuildings 13 16 16 15
         , stackBuildings 13 16 16 16
@@ -614,7 +617,7 @@ arrangeStackTiles_13 =
         , stackBuildings 13 8 9 20
         , stackDoors 13 10 10 17
         , stackDoors 13 10 10 18
-        , stackDoors 13 10 10 19
+        , stackBuildings 13 10 10 19
         , stackBuildings 13 10 10 20
         , stackBuildings 13 11 11 17
         , stackBuildings 13 11 11 18
@@ -625,8 +628,8 @@ arrangeStackTiles_13 =
         , stackTiles 13 1 5 20
         , stackTiles 13 1 1 21
         , stackTiles 13 1 1 22
-        , stackBuildings 13 2 4 21
-        , stackBuildings 13 2 4 22
+        , stackBuildings 13 2 3 21
+        , stackBuildings 13 2 3 22
         , stackBuildings 13 2 3 23
         ]
 
@@ -664,6 +667,25 @@ arrangeStackTiles_14 =
         , stackTiles 14 14 16 11
         , stackTiles 14 14 16 12
         , stackTiles 14 14 16 13
+        , stackTiles 14 1 7 17
+        , stackTiles 14 1 7 18
+        , stackTiles 14 1 5 19
+        , stackTiles 14 1 5 20
+        , stackTiles 14 1 1 21
+        , stackTiles 14 1 1 22
+        , stackBuildings 14 2 4 21
+        , stackBuildings 14 2 4 22
+        , stackBuildings 14 2 4 23
+        , stackBuildings 14 2 4 24
+        , stackBuildings 14 14 16 14
+        , stackBuildings 14 14 16 15
+        , stackBuildings 14 14 16 16
+        , stackBuildings 14 14 16 17
+        , stackBuildings 14 15 16 18
+        , stackBuildings 14 8 11 17
+        , stackBuildings 14 8 11 18
+        , stackBuildings 14 8 11 19
+        , stackBuildings 14 8 11 20
         ]
 
 
@@ -671,15 +693,47 @@ arrangeStackTiles_15 : List Order
 arrangeStackTiles_15 =
     -- stackCubes 列名 始点 終点 高さ
     List.concat <|
-        [ stackTiles 15 16 16 1
-        , stackTiles 15 16 16 2
-        , stackTiles 15 16 16 3
-        , stackTiles 15 16 16 4
-        , stackTiles 15 16 16 5
-        , stackTiles 15 16 16 6
-        , stackTiles 15 16 16 7
-        , stackTiles 15 16 16 8
-        , stackTiles 15 16 16 9
+        [ stackTiles 15 1 16 1
+        , stackTiles 15 1 16 2
+        , stackTiles 15 1 16 3
+        , stackTiles 15 1 16 4
+        , stackTiles 15 1 16 5
+        , stackTiles 15 1 16 6
+        , stackTiles 15 1 16 7
+        , stackTiles 15 1 16 8
+        , stackTiles 15 1 16 9
+        , stackTiles 15 1 16 10
+        , stackTiles 15 1 16 11
+        , stackTiles 15 1 16 12
+        , stackTiles 15 1 16 13
+        , stackTiles 15 1 13 14
+        , stackTiles 15 1 13 15
+        , stackTiles 15 1 13 16
+        , stackTiles 15 1 13 17
+        , stackBuildings 15 14 16 14
+        , stackBuildings 15 14 16 15
+        , stackBuildings 15 14 16 16
+        , stackBuildings 15 14 16 17
+        , stackBuildings 15 15 16 18
+        , stackTiles 15 1 14 18
+        , stackTiles 15 1 14 19
+        , stackTiles 15 1 5 20
+        , stackTiles 15 1 1 21
+        , stackTiles 15 1 1 22
+        , stackTiles 15 1 1 23
+        , stackTiles 15 1 1 24
+        , stackTiles 15 1 1 25
+        , stackDoors 15 4 4 21
+        , stackDoors 15 4 4 22
+        , stackBuildings 15 4 4 23
+        , stackBuildings 15 2 3 21
+        , stackBuildings 15 2 3 22
+        , stackBuildings 15 2 3 23
+        , stackBuildings 15 2 4 24
+        , stackTiles 15 6 6 20
+        , stackTiles 15 8 13 20
+        , stackTiles 15 8 12 21
+        , stackBuildings 15 8 11 22
         ]
 
 
@@ -687,19 +741,49 @@ arrangeStackTiles_16 : List Order
 arrangeStackTiles_16 =
     -- stackCubes 列名 始点 終点 高さ
     List.concat <|
-        [ stackTiles 16 16 16 1
-        , stackTiles 16 16 16 2
-        , stackTiles 16 16 16 3
-        , stackTiles 16 16 16 4
-        , stackTiles 16 16 16 5
-        , stackTiles 16 16 16 6
-        , stackTiles 16 16 16 7
-        , stackTiles 16 16 16 8
-        , stackTiles 16 16 16 9
-        , stackTiles 16 16 16 10
-        , stackTiles 16 16 16 11
-        , stackTiles 16 16 16 12
-        , stackTiles 16 16 16 13
+        [ stackTiles 16 1 16 1
+        , stackTiles 16 1 16 2
+        , stackTiles 16 1 16 3
+        , stackTiles 16 1 16 4
+        , stackTiles 16 1 16 5
+        , stackTiles 16 1 16 6
+        , stackTiles 16 1 16 7
+        , stackTiles 16 1 16 8
+        , stackTiles 16 1 16 9
+        , stackTiles 16 1 16 10
+        , stackTiles 16 1 16 11
+        , stackTiles 16 1 16 12
+        , stackTiles 16 1 16 13
+        , stackTiles 16 1 16 14
+        , stackTiles 16 1 16 15
+        , stackTiles 16 1 16 16
+        , stackTiles 16 1 16 17
+        , stackTiles 16 1 16 18
+        , stackTiles 16 1 16 19
+        , stackTiles 16 1 12 20
+        , stackTiles 16 8 12 21
+        , stackTiles 16 1 5 20
+        , stackTiles 16 1 5 21
+        , stackTiles 16 1 5 22
+        , stackTiles 16 1 5 23
+        , stackTiles 16 1 4 24
+        , stackTiles 16 1 4 25
+        , stackBuildings 16 8 11 22
+        , stackBuildings 16 8 8 23
+        , stackBuildings 16 8 8 24
+        , stackBuildings 16 8 8 25
+        , stackDoors 16 9 9 23
+        , stackDoors 16 9 9 24
+        , stackBuildings 16 9 9 25
+        , stackBuildings 16 10 10 23
+        , stackBuildings 16 10 10 24
+        , stackBuildings 16 10 10 25
+        , stackBuildings 16 8 9 26
+        , stackBuildings 16 13 15 20
+        , stackBuildings 16 13 15 21
+        , stackBuildings 16 13 15 22
+        , stackBuildings 16 13 15 23
+        , stackBuildings 16 13 13 24
         ]
 
 
@@ -707,19 +791,47 @@ arrangeStackTiles_17 : List Order
 arrangeStackTiles_17 =
     -- stackCubes 列名 始点 終点 高さ
     List.concat <|
-        [ stackTiles 17 16 16 1
-        , stackTiles 17 16 16 2
-        , stackTiles 17 16 16 3
-        , stackTiles 17 16 16 4
-        , stackTiles 17 16 16 5
-        , stackTiles 17 16 16 6
-        , stackTiles 17 16 16 7
-        , stackTiles 17 16 16 8
-        , stackTiles 17 16 16 9
-        , stackTiles 17 16 16 10
-        , stackTiles 17 16 16 11
-        , stackTiles 17 16 16 12
-        , stackTiles 17 16 16 13
+        [ stackTiles 17 1 16 1
+        , stackTiles 17 1 16 2
+        , stackTiles 17 1 16 3
+        , stackTiles 17 1 16 4
+        , stackTiles 17 1 16 5
+        , stackTiles 17 1 16 6
+        , stackTiles 17 1 16 7
+        , stackTiles 17 1 16 8
+        , stackTiles 17 1 16 9
+        , stackTiles 17 1 16 10
+        , stackTiles 17 1 16 11
+        , stackTiles 17 1 16 12
+        , stackTiles 17 1 16 13
+        , stackTiles 17 1 16 14
+        , stackTiles 17 1 16 15
+        , stackTiles 17 1 16 16
+        , stackTiles 17 1 16 17
+        , stackTiles 17 1 16 18
+        , stackTiles 17 1 16 19
+        , stackTiles 17 1 12 20
+        , stackTiles 17 1 12 21
+        , stackBuildings 17 2 5 22
+        , stackBuildings 17 2 5 23
+        , stackBuildings 17 2 5 24
+        , stackBuildings 17 2 5 25
+        , stackBuildings 17 2 4 26
+        , stackTiles 17 1 1 22
+        , stackTiles 17 1 1 23
+        , stackTiles 17 1 1 24
+        , stackTiles 17 1 1 25
+        , stackDoors 17 15 15 20
+        , stackDoors 17 15 15 21
+        , stackBuildings 17 15 15 22
+        , stackBuildings 17 13 15 23
+        , stackBuildings 17 13 15 24
+        , stackBuildings 17 8 11 22
+        , stackBuildings 17 8 11 23
+        , stackBuildings 17 8 11 23
+        , stackBuildings 17 8 11 24
+        , stackBuildings 17 8 11 25
+        , stackBuildings 17 8 11 26
         ]
 
 
@@ -727,19 +839,44 @@ arrangeStackTiles_18 : List Order
 arrangeStackTiles_18 =
     -- stackCubes 列名 始点 終点 高さ
     List.concat <|
-        [ stackTiles 18 16 16 1
-        , stackTiles 18 16 16 2
-        , stackTiles 18 16 16 3
-        , stackTiles 18 16 16 4
-        , stackTiles 18 16 16 5
-        , stackTiles 18 16 16 6
-        , stackTiles 18 16 16 7
-        , stackTiles 18 16 16 8
-        , stackTiles 18 16 16 9
-        , stackTiles 18 16 16 10
-        , stackTiles 18 16 16 11
-        , stackTiles 18 16 16 12
-        , stackTiles 18 16 16 13
+        [ stackTiles 18 1 16 1
+        , stackTiles 18 1 16 2
+        , stackTiles 18 1 16 3
+        , stackTiles 18 1 16 4
+        , stackTiles 18 1 16 5
+        , stackTiles 18 1 16 6
+        , stackTiles 18 1 16 7
+        , stackTiles 18 1 16 8
+        , stackTiles 18 1 16 9
+        , stackTiles 18 1 16 10
+        , stackTiles 18 1 16 11
+        , stackTiles 18 1 16 12
+        , stackTiles 18 1 16 13
+        , stackTiles 18 1 16 14
+        , stackTiles 18 1 16 15
+        , stackTiles 18 1 16 16
+        , stackTiles 18 1 16 17
+        , stackTiles 18 1 16 18
+        , stackTiles 18 1 16 19
+        , stackTiles 18 1 12 20
+        , stackTiles 18 1 12 21
+        , stackTiles 18 1 12 22
+        , stackBuildings 18 2 5 23
+        , stackBuildings 18 2 5 24
+        , stackBuildings 18 2 5 25
+        , stackBuildings 18 2 4 26
+        , stackTiles 18 1 1 22
+        , stackTiles 18 1 1 23
+        , stackTiles 18 1 1 24
+        , stackTiles 18 1 1 25
+        , stackBuildings 18 13 15 20
+        , stackBuildings 18 13 15 21
+        , stackBuildings 18 13 15 22
+        , stackBuildings 18 13 15 23
+        , stackBuildings 18 13 15 24
+        , stackTiles 18 8 13 23
+        , stackTiles 18 8 13 24
+        , stackTiles 18 8 13 25
         ]
 
 
@@ -747,19 +884,37 @@ arrangeStackTiles_19 : List Order
 arrangeStackTiles_19 =
     -- stackCubes 列名 始点 終点 高さ
     List.concat <|
-        [ stackTiles 19 16 16 1
-        , stackTiles 19 16 16 2
-        , stackTiles 19 16 16 3
-        , stackTiles 19 16 16 4
-        , stackTiles 19 16 16 5
-        , stackTiles 19 16 16 6
-        , stackTiles 19 16 16 7
-        , stackTiles 19 16 16 8
-        , stackTiles 19 16 16 9
-        , stackTiles 19 16 16 10
-        , stackTiles 19 16 16 11
-        , stackTiles 19 16 16 12
-        , stackTiles 19 16 16 13
+        [ stackTiles 19 1 16 1
+        , stackTiles 19 1 16 2
+        , stackTiles 19 1 16 3
+        , stackTiles 19 1 16 4
+        , stackTiles 19 1 16 5
+        , stackTiles 19 1 16 6
+        , stackTiles 19 1 16 7
+        , stackTiles 19 1 16 8
+        , stackTiles 19 1 16 9
+        , stackTiles 19 1 16 10
+        , stackTiles 19 1 16 11
+        , stackTiles 19 1 16 12
+        , stackTiles 19 1 16 13
+        , stackTiles 19 1 16 14
+        , stackTiles 19 1 16 15
+        , stackTiles 19 1 16 16
+        , stackTiles 19 1 16 17
+        , stackTiles 19 1 16 18
+        , stackTiles 19 1 16 19
+        , stackTiles 19 1 16 20
+        , stackTiles 19 1 16 21
+        , stackTiles 19 1 16 22
+        , stackTiles 19 1 16 23
+        , stackBuildings 19 2 5 24
+        , stackBuildings 19 2 5 25
+        , stackBuildings 19 2 5 26
+        , stackTiles 19 8 16 24
+        , stackTiles 19 8 16 25
+        , stackBuildings 19 9 9 25
+        , stackTiles 19 1 1 24
+        , stackTiles 19 1 1 25
         ]
 
 
@@ -767,19 +922,45 @@ arrangeStackTiles_20 : List Order
 arrangeStackTiles_20 =
     -- stackCubes 列名 始点 終点 高さ
     List.concat <|
-        [ stackTiles 20 16 16 1
-        , stackTiles 20 16 16 2
-        , stackTiles 20 16 16 3
-        , stackTiles 20 16 16 4
-        , stackTiles 20 16 16 5
-        , stackTiles 20 16 16 6
-        , stackTiles 20 16 16 7
-        , stackTiles 20 16 16 8
-        , stackTiles 20 16 16 9
-        , stackTiles 20 16 16 10
-        , stackTiles 20 16 16 11
-        , stackTiles 20 16 16 12
-        , stackTiles 20 16 16 13
+        [ stackTiles 20 1 16 1
+        , stackTiles 20 1 16 2
+        , stackTiles 20 1 16 3
+        , stackTiles 20 1 16 4
+        , stackTiles 20 1 16 5
+        , stackTiles 20 1 16 6
+        , stackTiles 20 1 16 7
+        , stackTiles 20 1 16 8
+        , stackTiles 20 1 16 9
+        , stackTiles 20 1 16 10
+        , stackTiles 20 1 16 11
+        , stackTiles 20 1 16 12
+        , stackTiles 20 1 16 13
+        , stackTiles 20 1 16 14
+        , stackTiles 20 1 16 15
+        , stackTiles 20 1 16 16
+        , stackTiles 20 1 16 17
+        , stackTiles 20 1 16 18
+        , stackTiles 20 1 16 19
+        , stackTiles 20 1 16 20
+        , stackTiles 20 1 16 21
+        , stackTiles 20 1 16 22
+        , stackTiles 20 1 16 23
+        , stackTiles 20 1 16 24
+        , stackTiles 20 1 5 25
+        , stackTiles 20 8 16 25
+        , stackBuildings 20 8 8 26
+        , stackBuildings 20 8 8 27
+        , stackBuildings 20 8 8 28
+        , stackDoors 20 9 9 26
+        , stackDoors 20 9 9 27
+        , stackBuildings 20 9 9 28
+        , stackBuildings 20 10 10 26
+        , stackBuildings 20 10 10 27
+        , stackBuildings 20 10 10 28
+        , stackBuildings 20 8 10 29
+        , stackBuildings 20 14 15 26
+        , stackBuildings 20 14 15 27
+        , stackBuildings 20 14 15 28
         ]
 
 
@@ -787,19 +968,38 @@ arrangeStackTiles_21 : List Order
 arrangeStackTiles_21 =
     -- stackCubes 列名 始点 終点 高さ
     List.concat <|
-        [ stackTiles 21 16 16 1
-        , stackTiles 21 16 16 2
-        , stackTiles 21 16 16 3
-        , stackTiles 21 16 16 4
-        , stackTiles 21 16 16 5
-        , stackTiles 21 16 16 6
-        , stackTiles 21 16 16 7
-        , stackTiles 21 16 16 8
-        , stackTiles 21 16 16 9
-        , stackTiles 21 16 16 10
-        , stackTiles 21 16 16 11
-        , stackTiles 21 16 16 12
-        , stackTiles 21 16 16 13
+        [ stackTiles 21 1 16 1
+        , stackTiles 21 1 16 2
+        , stackTiles 21 1 16 3
+        , stackTiles 21 1 16 4
+        , stackTiles 21 1 16 5
+        , stackTiles 21 1 16 6
+        , stackTiles 21 1 16 7
+        , stackTiles 21 1 16 8
+        , stackTiles 21 1 16 9
+        , stackTiles 21 1 16 10
+        , stackTiles 21 1 16 11
+        , stackTiles 21 1 16 12
+        , stackTiles 21 1 16 13
+        , stackTiles 21 1 16 14
+        , stackTiles 21 1 16 15
+        , stackTiles 21 1 16 16
+        , stackTiles 21 1 16 17
+        , stackTiles 21 1 16 18
+        , stackTiles 21 1 16 19
+        , stackTiles 21 1 16 20
+        , stackTiles 21 1 16 21
+        , stackTiles 21 1 16 22
+        , stackTiles 21 1 16 23
+        , stackTiles 21 1 16 24
+        , stackTiles 21 1 16 25
+        , stackBuildings 21 8 11 26
+        , stackBuildings 21 8 11 27
+        , stackBuildings 21 8 11 28
+        , stackBuildings 21 8 11 29
+        , stackBuildings 21 14 16 26
+        , stackBuildings 21 14 16 27
+        , stackBuildings 21 14 16 28
         ]
 
 
@@ -808,6 +1008,7 @@ stackDoors xindex start end stackNum =
     case xindex of
         0 ->
             [ Order end <| stackTileDoor 0 end stackNum ]
+
         _ ->
             case end of
                 0 ->
@@ -946,7 +1147,7 @@ innerTileBuilding n i stackNum =
 
         _ ->
             [ polygon
-                [ SvgAt.fill (Fill <| Color.rgb255 65 70 66)
+                [ SvgAt.fill (Fill <| Color.rgb255 120 120 120)
                 , stroke <| Color.rgb255 65 70 66
                 , strokeLinejoin StrokeLinejoinRound
                 , strokeWidth (px 1.0)
@@ -1039,7 +1240,7 @@ innerTileLand n i stackNum =
                 ]
                 []
             , polygon
-                [ SvgAt.fill (Fill <| Color.rgb255 117 148 81)
+                [ SvgAt.fill (Fill <| Color.rgb255 66 96 45)
                 , stroke <| Color.rgb255 65 70 66
                 , strokeLinejoin StrokeLinejoinRound
                 , strokeWidth (px 1.0)
@@ -1389,7 +1590,7 @@ createCube n i stackNum =
                 ]
                 []
             , polygon
-                [ SvgAt.fill (Fill <| Color.rgb255 70 153 202)
+                [ SvgAt.fill (Fill <| Color.rgb255 0 92 175)
                 , stroke <| Color.rgb255 65 70 66
                 , strokeLinejoin StrokeLinejoinRound
                 , strokeWidth (px 1.0)
