@@ -489,9 +489,8 @@ arrangeStackTiles_10 =
         , stackBuildings 10 2 2 17
         , stackBuildings 10 2 2 18
         , stackBuildings 10 2 2 19
-        , stackDoors 10 3 3 15
         , stackDoors 10 3 3 16
-        , stackBuildings 10 3 3 17
+        , stackDoors 10 3 3 17
         , stackBuildings 10 4 5 16
         , stackBuildings 10 4 4 17
         , stackBuildings 10 3 4 18
@@ -558,7 +557,7 @@ arrangeStackTiles_12 =
         , stackTiles 12 1 16 12
         , stackTiles 12 1 16 13
         , stackTiles 12 1 15 14
-        , stackBuildings 12 16 16 14
+        , stackBuildings 12 15 16 14
         , stackTiles 12 1 14 15
         , stackTiles 12 1 13 16
         , stackTiles 12 1 5 17
