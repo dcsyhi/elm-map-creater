@@ -1,4 +1,4 @@
-module Main exposing (Model, Msg(..), Order, Point, arrangeStackTiles_1, arrangeStackTiles_10, arrangeStackTiles_11, arrangeStackTiles_12, arrangeStackTiles_13, arrangeStackTiles_14, arrangeStackTiles_15, arrangeStackTiles_16, arrangeStackTiles_17, arrangeStackTiles_18, arrangeStackTiles_19, arrangeStackTiles_2, arrangeStackTiles_20, arrangeStackTiles_21, arrangeStackTiles_3, arrangeStackTiles_4, arrangeStackTiles_5, arrangeStackTiles_6, arrangeStackTiles_7, arrangeStackTiles_8, arrangeStackTiles_9, boardHeight, boardWidth, chapterTitle, createList, createSelectList, createTile, createTileList, createXYList, drawBaseTile, drawBoard, drawColumn, drawColumnList, drawObjects, drawPoints, drawQuarterBoard, drawQuarterObjects, drawRectBlue, drawRectGreen, drawRectRed, drawRectYellow, drawRow, drawRowList, drawStackTile, getPointXList, getPointYList, h, init, innerTileBlue, innerTileBuilding, innerTileDoor, innerTileGreen, innerTileLand, innerTileRed, innerTileYellow, leftSide, main, maxElement, offsetX, offsetY, orderTile, outputColumn, outputColumnRev, outputQuarterList, outputRow, quarterX, quarterY, rightSide, stackBuildings, stackDoors, stackTileBlue, stackTileBuilding, stackTileDoor, stackTileGreen, stackTileLand, stackTileRed, stackTileYellow, stackTiles, swap, tileHeight, tileWidth, top, townOfBarumamussa, update, view, w, zip)
+module Main exposing (Model, Msg(..), Order, Point, arrangeStackTiles_1, arrangeStackTiles_10, arrangeStackTiles_11, arrangeStackTiles_12, arrangeStackTiles_13, arrangeStackTiles_14, arrangeStackTiles_15, arrangeStackTiles_16, arrangeStackTiles_17, arrangeStackTiles_18, arrangeStackTiles_19, arrangeStackTiles_2, arrangeStackTiles_20, arrangeStackTiles_21, arrangeStackTiles_3, arrangeStackTiles_4, arrangeStackTiles_5, arrangeStackTiles_6, arrangeStackTiles_7, arrangeStackTiles_8, arrangeStackTiles_9, boardHeight, boardWidth, chapterTitle, createList, createSelectList, createTile, createTileList, createXYList, drawBaseTile, drawBoard, drawColumn, drawColumnList, drawObjects, drawPoints, drawQuarterBoard, drawQuarterObjects, drawRectBlue, drawRectGreen, drawRectRed, drawRectYellow, drawRow, drawRowList, getPointXList, getPointYList, h, init, innerTileBlue, innerTileBuilding, innerTileDoor, innerTileGreen, innerTileLand, innerTileRed, innerTileYellow, leftSide, main, maxElement, offsetX, offsetY, orderTile, outputColumn, outputColumnRev, outputQuarterList, outputRow, quarterX, quarterY, rightSide, stackBuildings, stackDoors, stackTileBlue, stackTileBuilding, stackTileDoor, stackTileGreen, stackTileLand, stackTileRed, stackTileYellow, stackTiles, swap, tileHeight, tileWidth, top, townOfBarumamussa, update, view, w, zip)
 
 import Array exposing (..)
 import Browser
@@ -1606,21 +1606,6 @@ createTileList n i stackNum =
 
         _ ->
             List.foldr (::) (createTile (n - 1) i stackNum) (createTileList (n - 1) i stackNum)
-
-
-drawStackTile : Int -> Int -> List (Svg msg)
-drawStackTile i stackNum =
-    case i of
-        0 ->
-            []
-
-        _ ->
-            List.foldr (::)
-                (createTileList maxElement i stackNum
-                    |> List.reverse
-                )
-            <|
-                drawStackTile (i - 1) stackNum
 
 
 drawBaseTile : Int -> Int -> Int -> List (Svg msg)
