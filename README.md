@@ -7,7 +7,7 @@ https://ellie-app.com/4bxtH59jcPza1
 
 第二章始動
 ---------
-https://ellie-app.com/4dnBdSK9Qwga1
+https://ellie-app.com/4dtKfKzYn4ta1
 
 参考情報
 -----------------
